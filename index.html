@@ -5,23 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LeBron James: The King 👑</title>
 <style>
-  body { font-family: 'Arial', sans-serif; margin:0; padding:0; background:#111; color:#fff; }
-  nav { background:#222; display:flex; justify-content:center; padding:10px; position:sticky; top:0; z-index:100; }
-  nav a { color:#fff; margin:0 15px; text-decoration:none; font-weight:bold; }
-  nav a:hover { color:#f0c000; }
-  section { padding:50px; text-align:center; min-height:100vh; }
-  h1 { font-size:3em; margin-bottom:10px; color:#f0c000; }
-  h2 { font-size:2em; margin-top:40px; color:#fff; }
-  .emojis { font-size:3em; margin:20px 0; }
-  .stats { display:flex; justify-content:center; flex-wrap:wrap; margin-top:20px; }
-  .stat { background:#222; margin:10px; padding:20px; border-radius:15px; width:120px; }
-  .achievements { display:flex; justify-content:center; flex-wrap:wrap; margin-top:20px; }
-  .achievement { background:#222; margin:10px; padding:15px; border-radius:10px; width:180px; }
-  footer { background:#222; padding:20px; text-align:center; color:#aaa; margin-top:50px; }
+body { margin:0; padding:0; font-family:Arial,sans-serif; background:#111; color:#fff; scroll-behavior:smooth; overflow-x:hidden; }
+nav { position:sticky; top:0; background:#222; display:flex; justify-content:center; padding:15px; z-index:100; }
+nav a { color:#fff; margin:0 15px; text-decoration:none; font-weight:bold; font-size:1.1em; }
+nav a:hover { color:#f0c000; }
+section { padding:80px 20px; text-align:center; min-height:100vh; position:relative; }
+h1 { font-size:3em; color:#f0c000; margin-bottom:10px; }
+h2 { font-size:2em; margin-bottom:20px; }
+.emojis { font-size:3em; margin:20px 0; }
+.stats, .achievements, .timeline { display:flex; flex-wrap:wrap; justify-content:center; }
+.stat, .achievement, .card { background:#222; margin:10px; padding:20px; border-radius:15px; width:200px; position:relative; overflow:hidden; transition:transform 0.3s, box-shadow 0.3s; }
+.stat:hover, .achievement:hover, .card:hover { transform:scale(1.08); box-shadow:0 0 25px #f0c000; }
+
+/* Animations */
+@keyframes bounce { 0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);} }
+@keyframes glow { 0%,100%{text-shadow:0 0 10px #f0c000;}50%{text-shadow:0 0 25px #ffd700;} }
+@keyframes flicker {0%,100%{transform:scale(1);opacity:1;}25%{transform:scale(1.1);opacity:0.8;}50%{transform:scale(0.9);opacity:0.9;}75%{transform:scale(1.05);opacity:0.95;}}
+@keyframes floatUp {0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-40px);opacity:0;}}
+@keyframes slideInLeft {0%{opacity:0; transform:translateX(-50px);}100%{opacity:1; transform:translateX(0);}}
+@keyframes slideInRight {0%{opacity:0; transform:translateX(50px);}100%{opacity:1; transform:translateX(0);}}
+
+/* Classes */
+.bounce { display:inline-block; animation:bounce 1s infinite; }
+.glow { display:inline-block; animation:glow 1.5s infinite; }
+.flicker { display:inline-block; animation:flicker 0.8s infinite; }
+.float-star { display:inline-block; animation:floatUp 2s infinite; margin:0 2px; }
+.card-left { animation:slideInLeft 1s forwards; opacity:0; }
+.card-right { animation:slideInRight 1s forwards; opacity:0; }
+
+/* Background floating balls */
+@keyframes floatBall {0%{transform:translateY(0);}100%{transform:translateY(-200px);}}
+.bg-ball { position:absolute; font-size:50px; opacity:0.08; animation:floatBall 12s infinite linear; }
+
 </style>
 </head>
 <body>
 
+<!-- Navigation -->
 <nav>
   <a href="#home">Home</a>
   <a href="#career">Career</a>
@@ -32,29 +52,60 @@
 
 <!-- Home -->
 <section id="home">
-  <h1>LeBron James 👑</h1>
-  <div class="emojis">🏀👑💪🔥</div>
+  <h1>LeBron James <span class="glow">👑</span></h1>
+  <div class="emojis">
+    <span class="bounce">🏀</span>
+    <span class="glow">👑</span>
+    <span class="flicker">🔥</span>
+  </div>
   <p>The King of the Court! Follow LeBron's legendary career, stats, and achievements.</p>
+  <div class="bg-ball" style="left:10%;">🏀</div>
+  <div class="bg-ball" style="left:70%; animation-delay:3s;">🏀</div>
+  <div class="bg-ball" style="left:40%; animation-delay:6s;">🏀</div>
 </section>
 
 <!-- Career -->
 <section id="career">
   <h2>Career Timeline 📅</h2>
-  <div class="emojis">🏀➡️🌆➡️🚀➡️🏆</div>
-  <ul style="list-style:none; padding:0; font-size:1.2em;">
-    <li>2003: Drafted by Cleveland Cavaliers 🏀</li>
-    <li>2010: Joined Miami Heat 🔥</li>
-    <li>2014: Returned to Cleveland Cavaliers 🌆</li>
-    <li>2018: Joined Los Angeles Lakers 🌴</li>
-  </ul>
+  <div class="timeline">
+
+    <div class="card card-left">
+      <h3>2003: Cleveland Cavaliers 🏀</h3>
+      <p>PPG: 20.9 <span class="bounce">🏀</span></p>
+      <p>RPG: 5.5 🔄</p>
+      <p>APG: 5.9 🎯</p>
+    </div>
+
+    <div class="card card-right">
+      <h3>2010: Miami Heat 🔥</h3>
+      <p>PPG: 26.7 <span class="bounce">🏀</span></p>
+      <p>RPG: 7.5 🔄</p>
+      <p>APG: 7.0 🎯</p>
+    </div>
+
+    <div class="card card-left">
+      <h3>2014: Cleveland Cavaliers 🌆</h3>
+      <p>PPG: 25.3 <span class="bounce">🏀</span></p>
+      <p>RPG: 6.0 🔄</p>
+      <p>APG: 7.4 🎯</p>
+    </div>
+
+    <div class="card card-right">
+      <h3>2018: Los Angeles Lakers 🌴</h3>
+      <p>PPG: 27.4 <span class="bounce">🏀</span></p>
+      <p>RPG: 8.5 🔄</p>
+      <p>APG: 8.3 🎯</p>
+    </div>
+
+  </div>
 </section>
 
 <!-- Stats -->
 <section id="stats">
   <h2>Stats 📊</h2>
   <div class="stats">
-    <div class="stat">Points: 38,000+ 🔥</div>
-    <div class="stat">Rebounds: 10,500+ 🏀</div>
+    <div class="stat">Points: 38,000+ <span class="bounce">🏀</span></div>
+    <div class="stat">Rebounds: 10,500+ 🔄</div>
     <div class="stat">Assists: 10,000+ 🎯</div>
     <div class="stat">Games: 1,400+ 🏟️</div>
   </div>
@@ -64,10 +115,10 @@
 <section id="achievements">
   <h2>Achievements 🏆</h2>
   <div class="achievements">
-    <div class="achievement">4× NBA Champion 🏀🏆</div>
-    <div class="achievement">4× MVP 🥇</div>
-    <div class="achievement">19× All-Star 🌟</div>
-    <div class="achievement">2× Olympic Gold Medalist 🥇🇺🇸</div>
+    <div class="achievement">4× NBA Champion 🏀🏆 <span class="float-star">🌟</span></div>
+    <div class="achievement">4× MVP 🥇 <span class="float-star">🌟</span></div>
+    <div class="achievement">19× All-Star 🌟 <span class="float-star">🌟</span></div>
+    <div class="achievement">2× Olympic Gold Medalist 🥇🇺🇸 <span class="float-star">🌟</span></div>
   </div>
 </section>
 
@@ -81,11 +132,15 @@
     <li>Born: December 30, 1984 🎂</li>
     <li>Hometown: Akron, Ohio 🏡</li>
   </ul>
-  <div class="emojis">🏀👑💪🔥🌟</div>
+  <div class="emojis">
+    <span class="bounce">🏀</span>
+    <span class="glow">👑</span>
+    <span class="flicker">🔥</span>
+  </div>
 </section>
 
 <footer>
-  <p>© 2025 LeBron James Fan Page 👑 | Built with ❤️ and emojis 🏀</p>
+  <p>© 2025 LeBron James Fan Page 👑 | Built with ❤️ and animated emojis 🏀</p>
 </footer>
 
 </body>
