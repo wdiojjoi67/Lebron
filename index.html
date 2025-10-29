@@ -3,151 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LeBron James — The King</title>
+<title>LeBron James: The King 👑</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-
-body {
-  background: radial-gradient(circle at top, #1a1a1a, #000);
-  color: #fff;
-  font-family: 'Orbitron', sans-serif;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-/* floating particles */
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  background: gold;
-  opacity: .7;
-  animation: float 10s linear infinite;
-}
-@keyframes float {
-  0% { transform: translateY(0); opacity:.8; }
-  100% { transform: translateY(-100vh); opacity:0; }
-}
-
-/* header */
-header {
-  text-align: center;
-  padding: 50px;
-  background: linear-gradient(to right,#552583,#FDB927);
-  position: relative;
-}
-header h1 {
-  color: gold;
-  font-size: 2.8rem;
-  text-shadow: 0 0 10px #fff;
-  animation: glow 2s ease-in-out infinite alternate;
-}
-@keyframes glow {
-  0% { text-shadow: 0 0 10px gold; }
-  100% { text-shadow: 0 0 25px #fff; }
-}
-
-.crown {
-  width:100px;
-  position:absolute;
-  top:-25px;
-  left:50%;
-  transform:translateX(-50%);
-  animation: bounce 1.5s ease-in-out infinite;
-}
-@keyframes bounce {
-  0%,100% { transform:translateX(-50%) translateY(0); }
-  50% { transform:translateX(-50%) translateY(-10px); }
-}
-
-.lebron-img {
-  width:120px;
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  animation: floatImg 3s ease-in-out infinite alternate;
-}
-@keyframes floatImg {
-  0% { transform:translate(-50%,-50%) rotate(0); }
-  50% { transform:translate(-50%,-55%) rotate(-4deg); }
-  100% { transform:translate(-50%,-50%) rotate(0); }
-}
-
-/* stats section */
-section {
-  text-align:center;
-  padding:50px 20px;
-  max-width:700px;
-  margin:auto;
-}
-.stats {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:20px;
-}
-.stat {
-  background:rgba(85,37,131,.7);
-  padding:30px;
-  border-radius:15px;
-  width:150px;
-  transition:all .3s;
-  box-shadow:0 0 10px #000;
-  cursor:pointer;
-}
-.stat:hover {
-  transform:scale(1.15) rotate(-2deg);
-  background:rgba(253,185,39,.9);
-  color:#000;
-  box-shadow:0 0 35px gold,0 0 60px #fff;
-}
-.stat h3 {
-  font-size:2.5rem;
-  margin:0 0 10px 0;
-}
-.stat p {
-  font-size:1.1rem;
-}
+  body { font-family: 'Arial', sans-serif; margin:0; padding:0; background:#111; color:#fff; }
+  nav { background:#222; display:flex; justify-content:center; padding:10px; position:sticky; top:0; z-index:100; }
+  nav a { color:#fff; margin:0 15px; text-decoration:none; font-weight:bold; }
+  nav a:hover { color:#f0c000; }
+  section { padding:50px; text-align:center; min-height:100vh; }
+  h1 { font-size:3em; margin-bottom:10px; color:#f0c000; }
+  h2 { font-size:2em; margin-top:40px; color:#fff; }
+  .emojis { font-size:3em; margin:20px 0; }
+  .stats { display:flex; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+  .stat { background:#222; margin:10px; padding:20px; border-radius:15px; width:120px; }
+  .achievements { display:flex; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+  .achievement { background:#222; margin:10px; padding:15px; border-radius:10px; width:180px; }
+  footer { background:#222; padding:20px; text-align:center; color:#aaa; margin-top:50px; }
 </style>
 </head>
 <body>
 
-<script>
-for(let i=0;i<50;i++){
-  const p=document.createElement('div');
-  p.classList.add('particle');
-  p.style.width=`${Math.random()*6+4}px`;
-  p.style.height=p.style.width;
-  p.style.left=`${Math.random()*100}vw`;
-  p.style.top=`${Math.random()*100}vh`;
-  p.style.animationDuration=`${Math.random()*10+5}s`;
-  document.body.appendChild(p);
-}
-</script>
+<nav>
+  <a href="#home">Home</a>
+  <a href="#career">Career</a>
+  <a href="#stats">Stats</a>
+  <a href="#achievements">Achievements</a>
+  <a href="#vitals">Vitals</a>
+</nav>
 
-<header>
-  <img src="https://i.imgur.com/oxhCpxr.png" class="crown" alt="Crown">
-  <h1>LeBron James — The King 👑</h1>
-  <img src="https://i.imgur.com/LMP8FEP.png" alt="LeBron James" class="lebron-img">
-</header>
+<!-- Home -->
+<section id="home">
+  <h1>LeBron James 👑</h1>
+  <div class="emojis">🏀👑💪🔥</div>
+  <p>The King of the Court! Follow LeBron's legendary career, stats, and achievements.</p>
+</section>
 
-<section>
+<!-- Career -->
+<section id="career">
+  <h2>Career Timeline 📅</h2>
+  <div class="emojis">🏀➡️🌆➡️🚀➡️🏆</div>
+  <ul style="list-style:none; padding:0; font-size:1.2em;">
+    <li>2003: Drafted by Cleveland Cavaliers 🏀</li>
+    <li>2010: Joined Miami Heat 🔥</li>
+    <li>2014: Returned to Cleveland Cavaliers 🌆</li>
+    <li>2018: Joined Los Angeles Lakers 🌴</li>
+  </ul>
+</section>
+
+<!-- Stats -->
+<section id="stats">
+  <h2>Stats 📊</h2>
   <div class="stats">
-    <div class="stat">
-      <h3>38,652</h3>
-      <p>Career Points</p>
-    </div>
-    <div class="stat">
-      <h3>10,847</h3>
-      <p>Assists</p>
-    </div>
-    <div class="stat">
-      <h3>10,692</h3>
-      <p>Rebounds</p>
-    </div>
+    <div class="stat">Points: 38,000+ 🔥</div>
+    <div class="stat">Rebounds: 10,500+ 🏀</div>
+    <div class="stat">Assists: 10,000+ 🎯</div>
+    <div class="stat">Games: 1,400+ 🏟️</div>
   </div>
 </section>
+
+<!-- Achievements -->
+<section id="achievements">
+  <h2>Achievements 🏆</h2>
+  <div class="achievements">
+    <div class="achievement">4× NBA Champion 🏀🏆</div>
+    <div class="achievement">4× MVP 🥇</div>
+    <div class="achievement">19× All-Star 🌟</div>
+    <div class="achievement">2× Olympic Gold Medalist 🥇🇺🇸</div>
+  </div>
+</section>
+
+<!-- Vitals -->
+<section id="vitals">
+  <h2>Vitals 🧬</h2>
+  <ul style="list-style:none; padding:0; font-size:1.2em;">
+    <li>Height: 6'9" 📏</li>
+    <li>Weight: 250 lbs ⚖️</li>
+    <li>Position: Forward 🔥</li>
+    <li>Born: December 30, 1984 🎂</li>
+    <li>Hometown: Akron, Ohio 🏡</li>
+  </ul>
+  <div class="emojis">🏀👑💪🔥🌟</div>
+</section>
+
+<footer>
+  <p>© 2025 LeBron James Fan Page 👑 | Built with ❤️ and emojis 🏀</p>
+</footer>
 
 </body>
 </html>
