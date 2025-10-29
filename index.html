@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeBron James - King Scoreboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+body {
+    background: radial-gradient(circle at top, #1a1a1a, #000);
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Particle background */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: gold;
+    opacity: 0.7;
+    animation: float 10s linear infinite;
+}
+@keyframes float {
+    0% { transform: translateY(0) translateX(0); opacity: 0.8; }
+    50% { opacity: 0.5; }
+    100% { transform: translateY(-1200px) translateX(100px); opacity: 0; }
+}
+
+header {
+    text-align: center;
+    padding: 50px;
+    background: linear-gradient(to right, #552583, #FDB927);
+    position: relative;
+    overflow: hidden;
+}
+header h1 {
+    font-size: 3rem;
+    color: gold;
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 10px #fff;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow {
+    0% { text-shadow: 0 0 10px gold; }
+    100% { text-shadow: 0 0 25px #fff; }
+}
+
+.crown {
+    width: 100px;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: crown-bounce 1.5s ease-in-out infinite;
+}
+@keyframes crown-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+    50% { transform: translateX(-50%) translateY(-15px) rotate(-5deg); }
+}
+
+.lebron-img {
+    width: 120px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: floatImg 3s ease-in-out infinite alternate;
+}
+@keyframes floatImg {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    50% { transform: translate(-50%, -55%) rotate(-5deg); }
+    100% { transform: translate(-50%, -50%) rotate(0deg); }
+}
+
+section {
+    padding: 50px 20px;
+    max-width: 700px;
+    margin: auto;
+    text-align: center;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+}
+.stat {
+    background: rgba(85, 37, 131, 0.7);
+    padding: 30px;
+    border-radius: 15px;
+    width: 150px;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    box-shadow: 0 0 10px #000;
+    position: relative;
+}
+.stat:hover {
+    transform: scale(1.2) rotate(-2deg);
+    background: rgba(253, 185, 39, 0.9);
+    color: #000;
+    box-shadow: 0 0 35px gold, 0 0 60px #fff;
+}
+.stat h3 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+.stat p {
+    font-size: 1.2rem;
+}
+</style>
+</head>
+<body>
+
+<!-- Particles -->
+<script>
+for (let i = 0; i < 60; i++) {
+    let particle = document.createElement('div');
+    particle.classList.add('particle');
+    particle.style.width = `${Math.random() * 6 + 4}px`;
+    particle.style.height = particle.style.width;
+    particle.style.left = `${Math.random() * 100}vw`;
+    particle.style.top = `${Math.random() * 100}vh`;
+    particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+    document.body.appendChild(particle);
+}
+</script>
+
+<header>
+    <img src="https://i.imgur.com/oxhCpxr.png" class="crown" alt="Crown">
+    <h1>LeBron James - King Scoreboard 👑</h1>
+    <img src="https://i.imgur.com/LMP8FEP.png" alt="LeBron James" class="lebron-img">
+</header>
+
+<section>
+    <div class="stats">
+        <div class="stat">
+            <h3>38,652</h3>
+            <p>Career Points</p>
+        </div>
+        <div class="stat">
+            <h3>10,847</h3>
+            <p>Assists</p>
+        </div>
+        <div class="stat">
+            <h3>10,692</h3>
+            <p>Rebounds</p>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
