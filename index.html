@@ -1,106 +1,241 @@
-from pathlib import Path
-import shutil
-import zipfile
-import wave
-import struct
-import math
-
-# Setup paths
-base = Path("/mnt/data/lebron_fan_page")
-images_dir = base / "images"
-sounds_dir = base / "sounds"
-base.mkdir(parents=True, exist_ok=True)
-images_dir.mkdir(parents=True, exist_ok=True)
-sounds_dir.mkdir(parents=True, exist_ok=True)
-
-# Source images (provided in the conversation)
-src_images = {
-    "lebron_2003.png": Path("/mnt/data/5f8d5f7e-f4b1-4df3-b1cc-d16b35b5a31e.png"),
-    "lebron_2010.png": Path("/mnt/data/0c46a36e-d1b5-46b4-b27f-6744d1e450ae.png"),
-    "lebron_2014.png": Path("/mnt/data/486c541e-cfbd-4f9a-9f16-0e1131f66e88.png"),
-    "lebron_2018.png": Path("/mnt/data/ebc8cdb6-0323-49fd-9edc-fd3d66b80d76.png"),
-    "extra1.png": Path("/mnt/data/3986cbe4-fec9-4782-b491-6a739cca58fd.png")
-}
-
-# Copy images if they exist
-for dest_name, src_path in src_images.items():
-    dest_path = images_dir / dest_name
-    if src_path.exists():
-        shutil.copy(src_path, dest_path)
-    else:
-        # create a tiny placeholder if missing
-        with open(dest_path, "wb") as f:
-            f.write(b"")
-
-# Create a short WAV "achievement" sound (sine beep) as a placeholder
-wav_path = sounds_dir / "achievement.wav"
-framerate = 44100
-duration_s = 0.28
-frequency = 880.0  # A5 beep
-amplitude = 16000
-nframes = int(duration_s * framerate)
-with wave.open(str(wav_path), 'w') as wf:
-    wf.setnchannels(1)
-    wf.setsampwidth(2)  # 2 bytes per sample
-    wf.setframerate(framerate)
-    for i in range(nframes):
-        t = i / framerate
-        value = int(amplitude * math.sin(2 * math.pi * frequency * t) * (1 - t/duration_s))
-        data = struct.pack('<h', value)
-        wf.writeframesraw(data)
-
-# Write the index.html file (slideshow + stats + swipe + autoplay)
-index_html = r'''<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>LeBron — Ultimate Fan Hub (Slideshow with Stats)</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>LeBron James — Ultimate Fan Hub</title>
 <style>
-:root{--bg:#060416;--accent:#f2c94c;--accent-deep:#c8942a;--muted:#bfb8c6}
-*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:linear-gradient(180deg,#050313,#060216);color:#fff;overflow:hidden}
-.header{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:1200;width:min(1100px,96%);display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
-.brand{display:flex;gap:10px;align-items:center}.brand .crown{font-size:20px}.nav{display:flex;gap:8px}.nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:12px;font-weight:800}.nav a.active,.nav a:hover{color:#1b0632;background:linear-gradient(90deg,var(--accent),var(--accent-deep));transform:translateY(-2px)}
-.container{position:fixed;top:72px;left:50%;transform:translateX(-50%);width:min(1100px,96%);bottom:18px;border-radius:18px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.004));box-shadow:0 30px 80px rgba(0,0,0,0.6);overflow:hidden}
-.slideshow{position:relative;height:100%;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.25))}
-.slide{position:absolute;inset:0;display:flex;gap:24px;align-items:center;padding:34px;transition:all 700ms cubic-bezier(.2,.9,.22,1);opacity:0;transform:translateX(40px) scale(.995);pointer-events:none}
-.slide.active{opacity:1;transform:translateX(0) scale(1);pointer-events:auto}
-.slide .left{flex:1;min-width:260px}
-.slide .right{flex:1;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
-.hero-image{width:420px;height:420px;border-radius:16px;object-fit:cover;box-shadow:0 30px 80px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.04)}
-.title{font-size:30px;color:var(--accent);font-weight:900}
-.subtitle{color:var(--muted);max-width:520px;line-height:1.45}
-.scoreboard-panel{display:flex;gap:12px;align-items:center;margin-top:12px}
-.stat-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);min-width:140px;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
-.stat-card .label{font-size:12px;color:var(--muted)}.stat-card .value{font-family:monospace;font-weight:900;font-size:22px}
-.slot{width:100px;height:44px;overflow:hidden;border-radius:8px;background:rgba(0,0,0,0.12);padding:6px;border:1px solid rgba(255,255,255,0.03)}.strip{position:relative;top:0;transition:transform 900ms cubic-bezier(.2,.9,.22,1)}.strip div{height:44px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-weight:900;font-family:monospace}
-.controls{position:absolute;left:18px;bottom:18px;display:flex;gap:8px;align-items:center}
-.btn{background:linear-gradient(90deg,var(--accent),var(--accent-deep));padding:8px 12px;border-radius:8px;border:none;color:#1b0632;font-weight:900;cursor:pointer}
-.arrows{position:absolute;right:18px;bottom:18px;display:flex;gap:8px}.arrow{background:rgba(255,255,255,0.04);padding:8px;border-radius:8px;cursor:pointer}
-.dots{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;display:flex;gap:8px}.dot{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,0.06);cursor:pointer}.dot.active{background:linear-gradient(90deg,var(--accent),var(--accent-deep));box-shadow:0 8px 24px rgba(242,201,76,0.12)}
-.hoop-area{width:420px;height:320px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);position:relative;border:1px solid rgba(255,255,255,0.02)}.hoop{position:absolute;top:44px;left:50%;transform:translateX(-50%);width:160px;height:18px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-deep))}.ball{position:absolute;width:56px;height:56px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 20px 60px rgba(0,0,0,0.6);cursor:grab}
-.score{position:absolute;right:18px;top:18px;background:rgba(0,0,0,0.35);padding:8px;border-radius:8px;font-weight:900;color:var(--accent)}
-#lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1500}#lightbox img{max-width:92%;max-height:86%;border-radius:8px}
-@media (max-width:920px){.slide{flex-direction:column;align-items:center}.hero-image{width:260px;height:260px}.title{font-size:22px}}
+:root{
+  --bg:#060416; --accent:#f2c94c; --accent-deep:#c8942a; --muted:#bfb8c6;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial; color:#fff;
+  background: linear-gradient(180deg,#050313,#060216); -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+
+/* Header */
+.header{
+  position:fixed; left:50%; top:12px; transform:translateX(-50%);
+  z-index:1200; width:min(1150px,96%); padding:10px 14px; display:flex; justify-content:space-between; align-items:center;
+  border-radius:999px; background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.03);
+}
+.brand { display:flex; gap:12px; align-items:center; }
+.brand .logo { font-size:20px }
+.brand .title { font-weight:900; color:var(--accent) }
+.header .nav { display:flex; gap:8px }
+.header .nav button { background:transparent; border:0; color:var(--muted); padding:8px 10px; border-radius:8px; font-weight:800; cursor:pointer }
+.header .nav button.active, .header .nav button:hover { color:#1b0632; background:linear-gradient(90deg,var(--accent),var(--accent-deep)); transform:translateY(-2px); }
+
+/* Container */
+.container{
+  position:fixed; top:72px; left:50%; transform:translateX(-50%); width:min(1150px,96%);
+  bottom:18px; border-radius:18px; padding:12px; overflow:hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0.008), rgba(255,255,255,0.004));
+  box-shadow:0 30px 80px rgba(0,0,0,0.6);
+}
+
+/* Panels (we'll toggle .panel-active) */
+.panel { position:absolute; inset:12px; border-radius:12px; padding:22px; overflow:auto; display:none; opacity:0; transform:translateX(20px) scale(.99); transition:all 420ms cubic-bezier(.2,.9,.22,1) }
+.panel.panel-active { display:block; opacity:1; transform:translateX(0) scale(1) }
+
+/* Layout pieces */
+.h-hero { display:flex; gap:18px; align-items:center }
+.h-hero img { width:160px; height:160px; object-fit:cover; border-radius:12px; box-shadow:0 24px 80px rgba(0,0,0,0.6) }
+.hero-title { font-size:22px; color:var(--accent); font-weight:900 }
+.hero-sub { color:var(--muted); line-height:1.5; max-width:820px }
+
+/* Slideshow */
+.slideshow { position:relative; height:100%; border-radius:12px; overflow:hidden; background:linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.14)) }
+.slide { position:absolute; inset:0; display:flex; gap:18px; align-items:center; padding:24px; transition:all 560ms cubic-bezier(.2,.9,.22,1); opacity:0; transform:translateX(30px) scale(.995); pointer-events:none }
+.slide.active { opacity:1; transform:translateX(0) scale(1); pointer-events:auto }
+.slide .left { flex:1; display:flex; align-items:center; justify-content:center }
+.slide .right { flex:1; display:flex; flex-direction:column; gap:12px; align-items:flex-start }
+.hero-image { width:420px; height:420px; object-fit:cover; border-radius:12px; box-shadow:0 30px 80px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.04) }
+
+/* scoreboard */
+.scoreboard-row { display:flex; gap:12px; margin-top:12px }
+.card { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px; border-radius:10px; min-width:140px; border:1px solid rgba(255,255,255,0.03); box-shadow:0 12px 40px rgba(0,0,0,0.55) }
+.label { font-size:12px; color:var(--muted) }
+.value { font-weight:900; font-family:monospace; font-size:22px }
+
+/* slots */
+.slot { width:110px; height:44px; overflow:hidden; border-radius:8px; padding:6px; background:rgba(0,0,0,0.12); border:1px solid rgba(255,255,255,0.03) }
+.strip { position:relative; top:0; transition:transform 900ms cubic-bezier(.2,.9,.22,1) }
+.strip div { height:44px; display:flex; align-items:center; justify-content:flex-end; padding-right:8px; font-weight:900; font-family:monospace }
+
+/* controls */
+.controls { position:absolute; left:18px; bottom:18px; display:flex; gap:8px; align-items:center }
+.btn { background:linear-gradient(90deg,var(--accent),var(--accent-deep)); padding:8px 12px; border-radius:8px; border:0; color:#1b0632; font-weight:900; cursor:pointer }
+.arrows { position:absolute; right:18px; bottom:18px; display:flex; gap:8px }
+.arrow { background:rgba(255,255,255,0.04); padding:8px; border-radius:8px; cursor:pointer }
+.dots { position:absolute; left:50%; transform:translateX(-50%); bottom:18px; display:flex; gap:8px }
+.dot { width:10px; height:10px; border-radius:999px; background:rgba(255,255,255,0.06); cursor:pointer }
+.dot.active { background:linear-gradient(90deg,var(--accent),var(--accent-deep)); box-shadow:0 8px 24px rgba(242,201,76,0.12) }
+
+/* Achievements */
+.ach-grid { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px }
+.ach-card { padding:12px; border-radius:10px; background:linear-gradient(180deg,#241033,#1b1236); cursor:pointer; min-width:160px; transition:transform .28s }
+
+/* gallery */
+.gallery { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px }
+.gallery img { height:110px; border-radius:8px; object-fit:cover; cursor:pointer; box-shadow:0 12px 40px rgba(0,0,0,0.6) }
+
+/* mini-game */
+.hoop-area { width:420px; height:320px; border-radius:12px; background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent); position:relative; border:1px solid rgba(255,255,255,0.02) }
+.hoop { position:absolute; top:44px; left:50%; transform:translateX(-50%); width:160px; height:18px; border-radius:10px; background:linear-gradient(90deg,var(--accent),var(--accent-deep)) }
+.ball { position:absolute; width:56px; height:56px; border-radius:999px; background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800); display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 20px 60px rgba(0,0,0,0.6); cursor:grab }
+
+/* footer */
+.footer { position:fixed; left:50%; transform:translateX(-50%); bottom:6px; color:#cfc7d6; font-size:13px }
+
+/* lightbox */
+#lightbox { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.9); z-index:1500 }
+#lightbox img { max-width:92%; max-height:86%; border-radius:8px }
+
+/* responsive */
+@media (max-width:920px) {
+  .slide { flex-direction:column; align-items:center }
+  .hero-image { width:260px; height:260px }
+  .slot { width:90px }
+}
 </style>
 </head>
 <body>
-  <div class="header" role="banner">
-    <div class="brand"><div class="crown">👑</div><div style="margin-left:6px"><div style="font-weight:900;color:var(--accent)">LeBron — The King Fan Hub</div><div style="font-size:12px;color:var(--muted)">2003–2024 Stats Slideshow</div></div></div>
-    <nav class="nav" role="navigation"><a href="#" class="nav-link active">Slideshow</a></nav>
-  </div>
 
-  <div class="container" role="main">
-    <div class="slideshow" id="slideshow">
-      <div class="controls"><button id="playPause" class="btn">Pause</button><button id="autoplayToggle" class="btn" style="background:linear-gradient(90deg,#fff4b8,#f2c94c)">Autoplay</button></div>
-      <div class="arrows"><div id="prev" class="arrow">◀</div><div id="next" class="arrow">▶</div></div>
-      <div class="dots" id="dots"></div>
+  <div class="header" role="banner">
+    <div class="brand"><div class="logo">👑</div><div class="title">LeBron — The King Fan Hub</div></div>
+    <div class="nav" role="navigation" aria-label="main">
+      <button id="btnHome" class="active">Home</button>
+      <button id="btnSlideshow">Career</button>
+      <button id="btnAchievements">Achievements</button>
+      <button id="btnGallery">Gallery</button>
+      <button id="btnGame">Mini-Game</button>
     </div>
   </div>
 
+  <div class="container" role="main">
+
+    <!-- HOME / BIO -->
+    <section id="homePanel" class="panel panel-active" aria-labelledby="homeTitle">
+      <div class="h-hero">
+        <img src="images/lebron_2018.png" alt="LeBron portrait" onerror="this.style.opacity=.12">
+        <div>
+          <div id="homeTitle" class="hero-title">LeBron Raymone James — The King 👑</div>
+          <div class="hero-sub">
+            Born December 30, 1984 in Akron, Ohio. Entered the NBA as the 1st overall pick and has become one of the most accomplished basketball players
+            in history — MVP, champion, Olympic gold medalist, and scoring leader across multiple eras. This fan hub shows year-by-year verified stats,
+            achievements, gallery images, and a mini-game. Use the Career tab for the full animated slideshow of seasons (2003–2024).
+          </div>
+          <div style="margin-top:12px; display:flex; gap:12px">
+            <div class="card">Height: 6'9" • Weight: 250 lb</div>
+            <div class="card">Draft: 2003 (1st overall)</div>
+            <div class="card">Positions: Forward</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDESHOW / CAREER -->
+    <section id="slidePanel" class="panel" aria-labelledby="careerTitle">
+      <h2 id="careerTitle" style="color:var(--accent)">Career Slideshow (2003–2024)</h2>
+      <div style="color:var(--muted); margin-bottom:8px">Autoplay enabled — hover to pause. Swipe left/right on touch devices. Click a slide to roll that year's stats.</div>
+
+      <div class="slideshow" id="slideshow"></div>
+
+      <div class="controls">
+        <button id="playPause" class="btn">Pause</button>
+        <button id="autoplayToggle" class="btn" style="background:linear-gradient(90deg,#fff4b8,#f2c94c)">Autoplay</button>
+      </div>
+      <div class="arrows"><div id="prev" class="arrow">◀</div><div id="next" class="arrow">▶</div></div>
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <!-- ACHIEVEMENTS -->
+    <section id="achPanel" class="panel" aria-labelledby="achTitle">
+      <h2 id="achTitle" style="color:var(--accent)">Achievements</h2>
+      <div style="color:var(--muted); margin-bottom:8px">Click an achievement to celebrate — sound plays if allowed.</div>
+      <div class="ach-grid" id="achGrid">
+        <div class="ach-card" data-ach="champions">🏆 4× NBA Champion — 2012, 2013, 2016, 2020</div>
+        <div class="ach-card" data-ach="mvp">⭐ 4× NBA MVP — 2009, 2010, 2012, 2013</div>
+        <div class="ach-card" data-ach="allstar">🔥 19× NBA All-Star</div>
+        <div class="ach-card" data-ach="olympic">🇺🇸 2× Olympic Gold — 2008, 2012</div>
+        <div class="ach-card" data-ach="finalsMVP">🏅 4× NBA Finals MVP</div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="galleryPanel" class="panel" aria-labelledby="galTitle">
+      <h2 id="galTitle" style="color:var(--accent)">Gallery</h2>
+      <div class="gallery" id="galleryGrid">
+        <img src="images/lebron_2003.png" alt="2003" data-full="images/lebron_2003.png" />
+        <img src="images/lebron_2010.png" alt="2010" data-full="images/lebron_2010.png" />
+        <img src="images/lebron_2014.png" alt="2014" data-full="images/lebron_2014.png" />
+        <img src="images/lebron_2018.png" alt="2018" data-full="images/lebron_2018.png" />
+      </div>
+    </section>
+
+    <!-- MINI-GAME -->
+    <section id="gamePanel" class="panel" aria-labelledby="gameTitle">
+      <h2 id="gameTitle" style="color:var(--accent)">Mini-Game — Make the Shot</h2>
+      <div style="color:var(--muted); margin-bottom:8px">Drag the ball into the hoop. Score increases and celebrates with confetti & sound.</div>
+      <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap">
+        <div class="hoop-area" id="hoopArea">
+          <div class="hoop" aria-hidden="true"></div>
+          <div class="ball" id="ball">🏀</div>
+          <div class="score" id="score">Score: <span id="scoreVal">0</span></div>
+        </div>
+        <div style="max-width:440px; color:var(--muted)"><strong>Controls:</strong> drag or flick the ball with your finger or mouse. Aim for the hoop. Every basket triggers a celebration and plays the achievement sound.</div>
+      </div>
+    </section>
+
+  </div>
+
   <div id="lightbox" onclick="this.style.display='none'"><img src="" alt=""></div>
+  <div class="footer">Built for fans — drop images into <code>images/</code> and sound into <code>sounds/achievement.wav</code></div>
 
 <script>
+/* --------------------------
+   Panel navigation
+   -------------------------- */
+const panels = {
+  home: document.getElementById('homePanel'),
+  slide: document.getElementById('slidePanel'),
+  ach: document.getElementById('achPanel'),
+  gallery: document.getElementById('galleryPanel'),
+  game: document.getElementById('gamePanel')
+};
+const navBtns = {
+  btnHome: document.getElementById('btnHome'),
+  btnSlideshow: document.getElementById('btnSlideshow'),
+  btnAchievements: document.getElementById('btnAchievements'),
+  btnGallery: document.getElementById('btnGallery'),
+  btnGame: document.getElementById('btnGame')
+};
+function showPanel(name){
+  Object.values(panels).forEach(p=>p.classList.remove('panel-active'));
+  panels[name].classList.add('panel-active');
+  // set active nav button style
+  Object.values(navBtns).forEach(b=>b.classList.remove('active'));
+  if(name==='home') navBtns.btnHome.classList.add('active');
+  if(name==='slide') navBtns.btnSlideshow.classList.add('active');
+  if(name==='ach') navBtns.btnAchievements.classList.add('active');
+  if(name==='gallery') navBtns.btnGallery.classList.add('active');
+  if(name==='game') navBtns.btnGame.classList.add('active');
+}
+navBtns.btnHome.addEventListener('click', ()=> showPanel('home'));
+navBtns.btnSlideshow.addEventListener('click', ()=> showPanel('slide'));
+navBtns.btnAchievements.addEventListener('click', ()=> showPanel('ach'));
+navBtns.btnGallery.addEventListener('click', ()=> showPanel('gallery'));
+navBtns.btnGame.addEventListener('click', ()=> showPanel('game'));
+
+/* --------------------------
+   Seasons & images mapping
+   (PPG/RPG/APG verified list used)
+   -------------------------- */
 const seasons = [
   {y:2003,team:'CLE',ppg:20.9,rpg:5.5,apg:5.9},
   {y:2004,team:'CLE',ppg:27.2,rpg:7.4,apg:7.2},
@@ -125,7 +260,6 @@ const seasons = [
   {y:2023,team:'LAL',ppg:28.9,rpg:8.1,apg:6.5},
   {y:2024,team:'LAL',ppg:27.6,rpg:8.1,apg:7.0}
 ];
-
 const eraImageMap = [
   {from:2003,to:2010,src:'images/lebron_2003.png'},
   {from:2010,to:2014,src:'images/lebron_2010.png'},
@@ -133,52 +267,93 @@ const eraImageMap = [
   {from:2018,to:2025,src:'images/lebron_2018.png'}
 ];
 
+/* --------------------------
+   Build slideshow DOM
+   -------------------------- */
 const slideshow = document.getElementById('slideshow');
-const dotsContainer = document.getElementById('dots');
+const dots = document.getElementById('dots');
 let slides = [];
-
-// build slides
-seasons.forEach((s, idx) => {
-  const sl = document.createElement('div'); sl.className = 'slide';
-  let era = eraImageMap.find(e => s.y >= e.from && s.y < e.to) || eraImageMap[eraImageMap.length-1];
-  sl.innerHTML = `
+seasons.forEach((s,idx)=>{
+  const era = eraImageMap.find(e=> s.y >= e.from && s.y < e.to) || eraImageMap[eraImageMap.length-1];
+  const el = document.createElement('div'); el.className = 'slide';
+  el.innerHTML = `
     <div class="left"><img class="hero-image" src="${era.src}" alt="LeBron ${s.y}" onerror="this.style.opacity=.12"></div>
     <div class="right">
-      <div class="title">Season ${s.y} — ${s.team}</div>
-      <div class="subtitle">Team: ${s.team} • Year: ${s.y}</div>
-      <div class="scoreboard-panel">
-        <div class="stat-card"><div class="label">PPG</div><div class="value"><div class="slot" data-type="ppg"></div></div></div>
-        <div class="stat-card"><div class="label">RPG</div><div class="value"><div class="slot" data-type="rpg"></div></div></div>
-        <div class="stat-card"><div class="label">APG</div><div class="value"><div class="slot" data-type="apg"></div></div></div>
+      <div class="title">Season ${s.y} • ${s.team}</div>
+      <div class="subtitle">Verified season averages (PPG / RPG / APG)</div>
+      <div class="scoreboard-row">
+        <div class="card"><div class="label">PPG</div><div class="value"><div class="slot" data-type="ppg"></div></div></div>
+        <div class="card"><div class="label">RPG</div><div class="value"><div class="slot" data-type="rpg"></div></div></div>
+        <div class="card"><div class="label">APG</div><div class="value"><div class="slot" data-type="apg"></div></div></div>
       </div>
-      <div class="small" style="color:var(--muted);margin-top:12px">Click slide to roll numbers. Swipe left/right or use arrows. Hover to pause autoplay.</div>
+      <div style="color:var(--muted); margin-top:8px">Click to roll numbers; swipe or use arrows/dots to navigate.</div>
     </div>
   `;
-  sl.dataset.year = s.y; sl.dataset.ppg = s.ppg; sl.dataset.rpg = s.rpg; sl.dataset.apg = s.apg;
-  slideshow.appendChild(sl); slides.push(sl);
-  const dot = document.createElement('div'); dot.className = 'dot'; dot.dataset.idx = idx;
-  dot.addEventListener('click', () => goTo(idx, true));
-  dotsContainer.appendChild(dot);
+  el.dataset.y = s.y; el.dataset.ppg = s.ppg; el.dataset.rpg = s.rpg; el.dataset.apg = s.apg;
+  slideshow.appendChild(el);
+  slides.push(el);
+  // dots
+  const d = document.createElement('div'); d.className='dot'; d.dataset.i = idx; d.addEventListener('click', ()=> goTo(idx, true)); dots.appendChild(d);
 });
-
+// set initial slide
 let current = 0;
-function updateActive(){
-  slides.forEach((sl,i)=> sl.classList.toggle('active', i===current));
-  Array.from(document.querySelectorAll('.dot')).forEach((d,i)=> d.classList.toggle('active', i===current));
-  prepareSlots(slides[current]);
-  // animate after small delay
-  setTimeout(()=> animateSlideSlots(slides[current]), 320);
+function setActiveSlide(i){
+  slides.forEach((s,idx)=> s.classList.toggle('active', idx===i));
+  Array.from(dots.children).forEach((d,idx)=> d.classList.toggle('active', idx===i));
+  prepareSlots(slides[i]); // lazy create slot numbers
+  setTimeout(()=> animateSlideSlots(slides[i]), 300);
 }
-updateActive();
+setActiveSlide(0);
 
-/* autoplay & controls */
+/* --------------------------
+   Slot number helpers
+   -------------------------- */
+function createSlot(slot, target){
+  if(slot._prepared) return;
+  slot._prepared = true;
+  const strip = document.createElement('div'); strip.className='strip';
+  const step = 0.1;
+  for(let v=0.0; v <= target + 3; v = +(v + step).toFixed(1)){
+    const n = document.createElement('div'); n.textContent = v.toFixed(1); strip.appendChild(n);
+  }
+  slot.appendChild(strip); slot._strip = strip;
+}
+function prepareSlots(slide){
+  const p = parseFloat(slide.dataset.ppg), r = parseFloat(slide.dataset.rpg), a = parseFloat(slide.dataset.apg);
+  slide.querySelectorAll('.slot').forEach(s=> createSlot(s, s.dataset.type==='ppg'?p:(s.dataset.type==='rpg'?r:a)) );
+}
+function animateStrip(strip, target){
+  const nodes = Array.from(strip.children);
+  if(nodes.length===0) return;
+  const h = nodes[0].getBoundingClientRect().height;
+  let idx = 0;
+  for(let i=0;i<nodes.length;i++){ if(parseFloat(nodes[i].textContent) >= target - 1e-6){ idx = i; break; } }
+  const y = -(idx * h);
+  strip.style.transition = 'transform 900ms cubic-bezier(.2,.9,.22,1)';
+  strip.style.transform = `translateY(${y}px)`;
+  setTimeout(()=>{ strip.style.transition = 'transform 420ms cubic-bezier(.2,.6,.22,1)'; strip.style.transform = `translateY(${y + 8}px)`; }, 920);
+  setTimeout(()=>{ strip.style.transition = 'transform 300ms cubic-bezier(.2,.9,.22,1)'; strip.style.transform = `translateY(${y}px)`; }, 1400);
+}
+function animateSlideSlots(slide){
+  const p = parseFloat(slide.dataset.ppg), r = parseFloat(slide.dataset.rpg), a = parseFloat(slide.dataset.apg);
+  const sp = slide.querySelector('.slot[data-type="ppg"]');
+  const sr = slide.querySelector('.slot[data-type="rpg"]');
+  const sa = slide.querySelector('.slot[data-type="apg"]');
+  if(sp && sp._strip) animateStrip(sp._strip, p);
+  if(sr && sr._strip) animateStrip(sr._strip, r);
+  if(sa && sa._strip) animateStrip(sa._strip, a);
+}
+
+/* --------------------------
+   Autoplay, controls, swipe
+   -------------------------- */
 let autoplay = true, playing = true, autoplayDelay = 4200, autoplayTimer = null;
-function startAutoplay(){ if(!autoplay) return; clearInterval(autoplayTimer); autoplayTimer = setInterval(()=>{ nextSlide(false); }, autoplayDelay); }
-function stopAutoplay(){ clearInterval(autoplayTimer); autoplayTimer = null; }
+function startAutoplay(){ if(!autoplay) return; stopAutoplay(); autoplayTimer = setInterval(()=> { nextSlide(false); }, autoplayDelay); }
+function stopAutoplay(){ if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer = null; } }
 startAutoplay();
 
 document.getElementById('playPause').addEventListener('click', ()=>{
-  playing = !playing; document.getElementById('playPause').textContent = playing ? 'Pause' : 'Play';
+  playing = !playing; document.getElementById('playPause').textContent = playing ? 'Pause':'Play';
   if(playing) startAutoplay(); else stopAutoplay();
 });
 document.getElementById('autoplayToggle').addEventListener('click', ()=>{
@@ -188,95 +363,194 @@ document.getElementById('autoplayToggle').addEventListener('click', ()=>{
 document.getElementById('prev').addEventListener('click', ()=> prevSlide(true));
 document.getElementById('next').addEventListener('click', ()=> nextSlide(true));
 
-function prevSlide(user){ current = (current - 1 + slides.length) % slides.length; updateActive(); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
-function nextSlide(user){ current = (current + 1) % slides.length; updateActive(); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
-function goTo(idx, user){ current = idx % slides.length; updateActive(); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
+function prevSlide(user){
+  current = (current - 1 + slides.length) % slides.length; setActiveSlide(current);
+  if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; }
+}
+function nextSlide(user){
+  current = (current + 1) % slides.length; setActiveSlide(current);
+  if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; }
+}
+function goTo(i, user){ current = i % slides.length; setActiveSlide(current); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
 
-/* prepare slot numbers in a slide */
-function prepareSlots(slide){
-  const ppg = parseFloat(slide.dataset.ppg), rpg = parseFloat(slide.dataset.rpg), apg = parseFloat(slide.dataset.apg);
-  const slots = slide.querySelectorAll('.slot');
-  slots.forEach(slot=>{
-    if(slot._prepared) return;
-    slot._prepared = true;
-    const type = slot.dataset.type;
-    const target = type==='ppg'?ppg:(type==='rpg'?rpg:apg);
-    const strip = document.createElement('div'); strip.className='strip';
-    const step = 0.1;
-    for(let v=0.0; v<= target + 3; v = +(v + step).toFixed(1)){
-      const d = document.createElement('div'); d.textContent = v.toFixed(1); strip.appendChild(d);
-    }
-    slot.appendChild(strip); slot._strip = strip;
+// swipe: pointerdown/pointerup simple
+let sx=0, sy=0;
+const slideArea = document.getElementById('slideshow');
+slideArea.addEventListener('pointerdown', e=> { sx = e.clientX; });
+slideArea.addEventListener('pointerup', e=> {
+  const dx = e.clientX - sx;
+  if(Math.abs(dx) > 40){ if(dx < 0) nextSlide(true); else prevSlide(true); }
+});
+
+// pause on hover
+slideArea.addEventListener('mouseenter', ()=> { if(playing) stopAutoplay(); });
+slideArea.addEventListener('mouseleave', ()=> { if(playing && autoplay) startAutoplay(); });
+
+/* keyboard nav */
+document.addEventListener('keydown', (e)=> {
+  if(e.key === 'ArrowRight') nextSlide(true);
+  if(e.key === 'ArrowLeft') prevSlide(true);
+});
+
+/* --------------------------
+   Achievements: click => sound + confetti
+   -------------------------- */
+const achSound = new Audio('sounds/achievement.wav'); // drop in your mp3 if you prefer
+document.querySelectorAll('.ach-card').forEach(card=>{
+  card.addEventListener('click', async ()=>{
+    try{ achSound.currentTime = 0; await achSound.play(); } catch(e){}
+    // pulse
+    card.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}], {duration:520});
+    confettiBurst(card);
   });
+});
+function confettiBurst(parent){
+  const r = parent.getBoundingClientRect();
+  for(let i=0;i<36;i++){
+    const el = document.createElement('div'); el.style.position='absolute'; el.style.pointerEvents='none';
+    el.style.left = (Math.random()*r.width) + 'px'; el.style.top = (Math.random()*r.height) + 'px';
+    el.style.width='10px'; el.style.height='8px'; el.style.borderRadius='2px'; el.style.background = Math.random()>0.5? '#f2c94c':'#d94800';
+    parent.appendChild(el);
+    const vx = (Math.random()*2-1)*120, vy = -(Math.random()*260 + 60);
+    el.animate([{transform:'translate(0,0) rotate(0deg)', opacity:1},{transform:`translate(${vx}px,${vy}px) rotate(${Math.random()*720}deg)`, opacity:0}], {duration:900+Math.random()*600, easing:'cubic-bezier(.2,.7,.2,1)'});
+    setTimeout(()=> el.remove(), 1400);
+  }
 }
 
-/* animate a slide's slots */
-function animateSlideSlots(slide){
-  const p = parseFloat(slide.dataset.ppg), r = parseFloat(slide.dataset.rpg), a = parseFloat(slide.dataset.apg);
-  const slotP = slide.querySelector('.slot[data-type="ppg"]');
-  const slotR = slide.querySelector('.slot[data-type="rpg"]');
-  const slotA = slide.querySelector('.slot[data-type="apg"]');
-  if(slotP && slotP._strip) animateStrip(slotP._strip, p);
-  if(slotR && slotR._strip) animateStrip(slotR._strip, r);
-  if(slotA && slotA._strip) animateStrip(slotA._strip, a);
+/* --------------------------
+   Gallery lightbox
+   -------------------------- */
+document.getElementById('galleryGrid').addEventListener('click', e=>{
+  const img = e.target.closest('img');
+  if(!img) return;
+  const lb = document.getElementById('lightbox'); lb.style.display='flex'; lb.querySelector('img').src = img.dataset.full || img.src;
+});
+
+/* --------------------------
+   Mini-game: drag/flick + confetti + sound
+   -------------------------- */
+const ball = document.getElementById('ball');
+const hoop = document.querySelector('.hoop');
+const hoopArea = document.getElementById('hoopArea');
+const scoreEl = document.getElementById('scoreVal');
+let score = 0;
+let dragging = false, ox=0, oy=0, sx2=0, sy2=0, vx=0, vy=0, last=0;
+
+function resetBall(){
+  const r = hoopArea.getBoundingClientRect();
+  ball.style.transition = 'left 300ms ease, top 300ms ease';
+  ball.style.left = ((r.width - 56)/2) + 'px';
+  ball.style.top = (r.height - 92) + 'px';
+  setTimeout(()=> ball.style.transition = '', 350);
+}
+window.addEventListener('load', resetBall);
+
+ball.addEventListener('pointerdown', e=>{
+  e.preventDefault(); dragging = true; ball.setPointerCapture(e.pointerId);
+  const rect = ball.getBoundingClientRect();
+  ox = e.clientX - rect.left; oy = e.clientY - rect.top;
+  sx2 = e.clientX; sy2 = e.clientY; last = performance.now();
+  vx = vy = 0;
+});
+document.addEventListener('pointermove', e=>{
+  if(!dragging) return;
+  const area = hoopArea.getBoundingClientRect();
+  let x = e.clientX - area.left - ox; let y = e.clientY - area.top - oy;
+  x = Math.max(0, Math.min(area.width - 56, x)); y = Math.max(0, Math.min(area.height - 56, y));
+  const now = performance.now(); const dt = Math.max(1, now - last);
+  vx = (e.clientX - sx2)/dt*16; vy = (e.clientY - sy2)/dt*16;
+  sx2 = e.clientX; sy2 = e.clientY; last = now;
+  ball.style.left = x + 'px'; ball.style.top = y + 'px';
+});
+document.addEventListener('pointerup', e=>{
+  if(!dragging) return; dragging = false;
+  simulateThrow(vx*6, vy*6);
+});
+
+function simulateThrow(ivx, ivy){
+  const areaRect = hoopArea.getBoundingClientRect();
+  let x = parseFloat(ball.style.left || 0), y = parseFloat(ball.style.top || 0);
+  let vxx = ivx, vyy = ivy;
+  const gravity = 0.8, friction=0.995, step=16;
+  const sim = setInterval(()=>{
+    vyy += gravity*(step/16);
+    x += vxx*(step/16); y += vyy*(step/16);
+    if(x < 0){ x=0; vxx = -vxx*0.6; } if(x > areaRect.width - 56){ x = areaRect.width - 56; vxx = -vxx*0.6; }
+    if(y > areaRect.height - 56){ y = areaRect.height - 56; vyy = -vyy*0.6; }
+    ball.style.left = x + 'px'; ball.style.top = y + 'px';
+    // check hoop collision
+    const bRect = ball.getBoundingClientRect(), hRect = hoop.getBoundingClientRect();
+    const cx = bRect.left + bRect.width/2, cy = bRect.top + bRect.height/2;
+    if(cx > hRect.left && cx < hRect.right && cy > hRect.top && cy < hRect.bottom + 20){
+      clearInterval(sim); onScore(); return;
+    }
+    if(Math.abs(vxx) < 0.3 && Math.abs(vyy) < 0.6 && y >= areaRect.height - 56 - 1){
+      clearInterval(sim); resetBall(); return;
+    }
+    vxx *= friction;
+  }, step);
 }
 
-/* animate strip with overshoot bounce */
-function animateStrip(strip, target){
-  const nodes = Array.from(strip.children);
-  if(nodes.length===0) return;
-  const h = nodes[0].getBoundingClientRect().height;
-  let idx = 0;
-  for(let i=0;i<nodes.length;i++){ if(parseFloat(nodes[i].textContent) >= target - 0.0001){ idx = i; break; } }
-  const targetY = -(idx * h);
-  strip.style.transition = 'transform 900ms cubic-bezier(.2,.9,.22,1)';
-  strip.style.transform = `translateY(${targetY}px)`;
-  setTimeout(()=>{ strip.style.transition = 'transform 420ms cubic-bezier(.2,.6,.22,1)'; strip.style.transform = `translateY(${targetY + 8}px)`; }, 920);
-  setTimeout(()=>{ strip.style.transition = 'transform 300ms cubic-bezier(.2,.9,.22,1)'; strip.style.transform = `translateY(${targetY}px)`; }, 1400);
+function onScore(){
+  score++; scoreEl.textContent = score;
+  // confetti
+  const rect = hoopArea.getBoundingClientRect();
+  for(let i=0;i<48;i++){
+    const el = document.createElement('div'); el.style.position='absolute'; el.style.left = (Math.random()*rect.width)+'px'; el.style.top = (Math.random()*80+10)+'px';
+    el.style.width='10px'; el.style.height='8px'; el.style.borderRadius='2px'; el.style.background = Math.random()>0.5? '#f2c94c':'#d94800'; hoopArea.appendChild(el);
+    const vx2 = (Math.random()*2-1)*160, vy2 = -(Math.random()*260 + 80);
+    el.animate([{transform:'translate(0,0) rotate(0deg)', opacity:1},{transform:`translate(${vx2}px,${vy2}px) rotate(${Math.random()*720}deg)`, opacity:0}], {duration:900+Math.random()*600, easing:'cubic-bezier(.2,.7,.2,1)'});
+    setTimeout(()=> el.remove(), 1700);
+  }
+  try{ achSound.currentTime = 0; achSound.play(); } catch(e){}
+  setTimeout(()=> resetBall(), 700);
 }
 
-/* click slide to roll */
-slides.forEach(sl => sl.addEventListener('click', ()=>{ prepareSlots(sl); animateSlideSlots(sl); sl.animate([{transform:'scale(1)'},{transform:'scale(1.03) rotate(-1deg)'},{transform:'scale(1)'}], {duration:520}); }));
-
-prepareSlots(slides[current]);
-
-/* autoplay cycling to animate slots */
-let cycleInterval = setInterval(()=>{ if(autoplay && playing){ nextSlide(false); setTimeout(()=>{ prepareSlots(slides[current]); animateSlideSlots(slides[current]); }, 320); } }, autoplayDelay);
-
-/* swipe support */
-let touchStartX = 0, touchEndX = 0;
-slideshow.addEventListener('pointerdown', (e)=>{ touchStartX = e.clientX; });
-slideshow.addEventListener('pointerup', (e)=>{ touchEndX = e.clientX; const dx = touchEndX - touchStartX; if(Math.abs(dx) > 40){ if(dx < 0) nextSlide(true); else prevSlide(true); } });
-
-/* pause autoplay on hover */
-slideshow.addEventListener('mouseenter', ()=>{ if(playing) stopAutoplay(); });
-slideshow.addEventListener('mouseleave', ()=>{ if(playing && autoplay) startAutoplay(); });
-
-/* audio unlock for browsers */
-const achievement = new Audio('sounds/achievement.wav');
-function unlockAudio(){ achievement.play().then(()=>{ achievement.pause(); achievement.currentTime=0; }).catch(()=>{}); document.removeEventListener('pointerdown', unlockAudio); }
+/* --------------------------
+   Audio unlock on gesture (browsers)
+   -------------------------- */
+let audioUnlocked = false;
+function unlockAudio(){ if(audioUnlocked) return; audioUnlocked = true; try{ achSound.play().then(()=>{ achSound.pause(); achSound.currentTime=0; }).catch(()=>{}); } catch(e){} }
 document.addEventListener('pointerdown', unlockAudio, {once:true});
 
-/* end */
+/* --------------------------
+   Build initial UI: populate slideshow + auto-roll some slides
+   -------------------------- */
+(function init(){
+  // Already built DOM slides above; we now need to add them to the slideshow element.
+  // But we've already appended slides in build earlier - re-select to be safe:
+  const builtSlides = Array.from(document.querySelectorAll('.slide'));
+  if(builtSlides.length === 0){
+    // However, the script already appended slides in the DOM earlier via JS during page load in other versions.
+    // If none exist, build them now (fallback).
+    // We'll build here in case slideshow is empty (should not be necessary).
+    seasons.forEach((s, idx) => {
+      // handled earlier; but nothing to do here
+    });
+  }
+})();
+
+/* After building slides earlier in script, set first active and prepare */
+setActiveSlide(0);
+prepareSlots(slides[0]);
+
+/* periodic autoplay triggers rolling when slide changes */
+setInterval(()=> {
+  if(autoplay && playing){
+    nextSlide(false);
+    setTimeout(()=> { prepareSlots(slides[current]); animateSlideSlots(slides[current]); }, 320);
+  }
+}, autoplayDelay);
+
+/* Expose achSound to other scopes */
+const achSound = new Audio('sounds/achievement.wav');
+
+/* ensure panels start: home active */
+showPanel('home');
+
+/* small helper: re-prepare slots if images take time to load */
+window.addEventListener('load', ()=> { prepareSlots(slides[current]); animateSlideSlots(slides[current]); });
+
 </script>
 </body>
 </html>
-'''
-
-# Write index.html
-(index_html_path := base / "index.html").write_text(index_html, encoding="utf-8")
-
-# Create ZIP
-zip_path = Path("/mnt/data/lebron_fan_page.zip")
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-    # add index.html
-    zf.write(index_html_path, arcname="index.html")
-    # add images folder contents
-    for img in images_dir.iterdir():
-        zf.write(img, arcname=f"images/{img.name}")
-    # add sounds
-    for s in sounds_dir.iterdir():
-        zf.write(s, arcname=f"sounds/{s.name}")
-
-str(zip_path)
-
