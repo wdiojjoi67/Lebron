@@ -1,190 +1,149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LeBron James: The King 👑</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LeBron James — Ultimate Fan Page</title>
 <style>
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: #0a0a0a;
-  color: #fff;
-  overflow-x: hidden;
-}
-nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: #111;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  padding: 15px 0;
-  z-index: 1000;
-}
-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.1em;
-  transition: 0.3s;
-}
-nav a:hover {
-  color: #f0c000;
-}
-
-/* Loader */
-#loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  transition: opacity 1s ease;
-}
-#loader.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-.ball {
-  font-size: 5em;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Pages */
-.page {
-  display: none;
-  padding: 100px 20px;
-  text-align: center;
-  min-height: 100vh;
-  transition: opacity 1s ease, transform 1s ease;
-  opacity: 0;
-  transform: translateY(30px);
-}
-.page.active {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-h1, h2 {
-  color: #f0c000;
-  text-shadow: 0 0 20px #f0c000;
-}
-
-.card {
-  background: #222;
-  padding: 20px;
-  margin: 15px;
-  border-radius: 15px;
-  display: inline-block;
-  width: 250px;
-  transition: transform 0.4s, box-shadow 0.4s;
-}
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 30px #f0c000;
-}
-
-/* Scoreboard style numbers */
-.scoreboard {
-  background: #111;
-  border: 2px solid #f0c000;
-  border-radius: 10px;
-  font-family: "Courier New", monospace;
-  font-size: 1.8em;
-  color: #f0c000;
-  padding: 15px;
-  margin: 15px;
-  display: inline-block;
-  animation: flip 1s ease forwards;
-}
-@keyframes flip {
-  0% { transform: rotateX(90deg); opacity: 0; }
-  100% { transform: rotateX(0); opacity: 1; }
-}
+:root{--bg:#0b0526;--accent:#f2c94c;--panel:#1b1236}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{background:linear-gradient(180deg,#080316,#0b0526);color:#fff;overflow-x:hidden;scroll-behavior:smooth}
+header{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(0,0,0,0.45);padding:8px 12px;border-radius:999px;display:flex;gap:8px;align-items:center}
+header a{color:#ddd;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
+header a:hover{color:var(--accent)}
+header a.active{color:var(--accent)}
+section{min-height:100vh;padding:100px 18px 60px 18px;display:flex;flex-direction:column;align-items:center;gap:18px;opacity:0;transform:translateY(40px);transition:all 0.7s ease}
+section.active{opacity:1;transform:translateY(0)}
+h1,h2{color:var(--accent);text-align:center}
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);min-width:220px;box-shadow:0 12px 36px rgba(0,0,0,0.55);margin:12px}
+.stats-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:1000px}
+.flip{display:inline-block;min-width:48px;text-align:right;font-family:monospace}
+.hoop-area{position:relative;height:260px;width:360px;margin:24px auto;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;align-items:flex-end;justify-content:center}
+.hoop{position:absolute;top:28px;width:120px;height:14px;border-radius:8px;background:var(--accent);left:50%;transform:translateX(-50%);box-shadow:0 6px 22px rgba(242,201,76,0.12)}
+.ball{position:absolute;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);bottom:18px;left:50%;transform:translateX(-50%);cursor:grab;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;opacity:0;}
+footer{text-align:center;color:#cfc7d6;margin-top:34px;padding-bottom:34px}
 </style>
 </head>
 <body>
 
-<div id="loader"><div class="ball">🏀</div></div>
+<header>
+  <a href="#home" class="nav-link active">Home</a>
+  <a href="#bio" class="nav-link">Bio</a>
+  <a href="#career" class="nav-link">Career</a>
+  <a href="#achievements" class="nav-link">Achievements</a>
+  <a href="#game" class="nav-link">Mini-Game</a>
+</header>
 
-<nav>
-  <a href="#" data-target="home">Home</a>
-  <a href="#" data-target="career">Career</a>
-  <a href="#" data-target="stats">Stats</a>
-  <a href="#" data-target="achievements">Achievements</a>
-  <a href="#" data-target="vitals">Vitals</a>
-</nav>
+<section id="home" class="active">
+<h1>🏀 LeBron James — The King 👑</h1>
+<p>Welcome to the ultimate fan page with stats, achievements, and interactive mini-game!</p>
+</section>
 
-<div id="home" class="page active">
-  <h1>LeBron James 👑</h1>
-  <p>The King of Basketball 🏀🔥</p>
+<section id="bio">
+<h2>📖 Bio</h2>
+<p>LeBron Raymone James, born December 30, 1984, Akron, Ohio. From high school prodigy to NBA legend, this section gives a detailed look at his life and legacy. Timeline animations show milestones in his career.</p>
+</section>
+
+<section id="career">
+<h2>📊 Career Stats (2003–2024)</h2>
+<div class="stats-grid" id="statsGrid"></div>
+</section>
+
+<section id="achievements">
+<h2>🏆 Achievements</h2>
+<div class="stats-grid">
+<div class="card">4× NBA Champion (2012, 2013, 2016, 2020)</div>
+<div class="card">4× NBA MVP (2009, 2010, 2012, 2013)</div>
+<div class="card">19× NBA All-Star</div>
+<div class="card">2× Olympic Gold Medalist (2008, 2012)</div>
+<div class="card">4× NBA Finals MVP</div>
 </div>
+</section>
 
-<div id="career" class="page">
-  <h2>Career Timeline</h2>
-  <div class="card"><h3>2003: Cavaliers</h3><p>PPG: 20.9 | RPG: 5.5 | APG: 5.9</p></div>
-  <div class="card"><h3>2010: Heat</h3><p>PPG: 26.7 | RPG: 7.5 | APG: 7.0</p></div>
-  <div class="card"><h3>2014: Cavs Return</h3><p>PPG: 25.3 | RPG: 6.0 | APG: 7.4</p></div>
-  <div class="card"><h3>2018: Lakers</h3><p>PPG: 27.4 | RPG: 8.5 | APG: 8.3</p></div>
+<section id="game">
+<h2>🏀 Mini-Game</h2>
+<p>Drag the basketball into the hoop to celebrate with confetti!</p>
+<div class="hoop-area" id="hoopArea">
+  <div class="hoop"></div>
+  <div class="ball" id="ball">🏀</div>
 </div>
+</section>
 
-<div id="stats" class="page">
-  <h2>Stats</h2>
-  <div class="scoreboard">Points: 38,000+</div>
-  <div class="scoreboard">Rebounds: 10,500+</div>
-  <div class="scoreboard">Assists: 10,000+</div>
-  <div class="scoreboard">Games: 1,400+</div>
-</div>
-
-<div id="achievements" class="page">
-  <h2>Achievements 🏆</h2>
-  <div class="card">4× NBA Champion</div>
-  <div class="card">4× MVP</div>
-  <div class="card">19× All-Star</div>
-  <div class="card">2× Olympic Gold Medalist</div>
-</div>
-
-<div id="vitals" class="page">
-  <h2>Vitals</h2>
-  <p>Height: 6'9" 📏</p>
-  <p>Weight: 250 lbs ⚖️</p>
-  <p>Position: Forward 🔥</p>
-  <p>Born: December 30, 1984 🎂</p>
-  <p>Hometown: Akron, Ohio 🏡</p>
-</div>
+<footer>Built with ❤️ for LeBron fans</footer>
 
 <script>
-window.addEventListener("load", () => {
-  const loader = document.getElementById("loader");
-  setTimeout(() => {
-    loader.classList.add("hidden");
-  }, 1200); // Loader hides after 1.2s
+// --- Navigation ---
+const links=document.querySelectorAll('.nav-link');
+const sections=document.querySelectorAll('section');
+links.forEach(l=>l.addEventListener('click',e=>{
+  e.preventDefault();
+  let target=document.querySelector(l.getAttribute('href'));
+  sections.forEach(s=>s.classList.remove('active'));
+  target.classList.add('active');
+  links.forEach(a=>a.classList.remove('active'));
+  l.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+// --- Career Stats 2003-2024 ---
+const seasons=[
+{y:2003,team:'CLE',ppg:20.9,rpg:5.5,apg:5.9},
+{y:2004,team:'CLE',ppg:27.2,rpg:7.4,apg:7.2},
+{y:2005,team:'CLE',ppg:31.4,rpg:7.0,apg:6.6},
+{y:2006,team:'CLE',ppg:31.4,rpg:7.0,apg:6.6},
+{y:2007,team:'CLE',ppg:27.3,rpg:6.7,apg:6.0},
+{y:2008,team:'CLE',ppg:30.0,rpg:7.9,apg:7.2},
+{y:2009,team:'CLE',ppg:28.4,rpg:7.6,apg:7.2},
+{y:2010,team:'CLE',ppg:29.7,rpg:7.3,apg:8.6},
+{y:2011,team:'MIA',ppg:26.7,rpg:7.5,apg:7.0},
+{y:2012,team:'MIA',ppg:27.1,rpg:7.9,apg:6.2},
+{y:2013,team:'MIA',ppg:26.8,rpg:8.0,apg:7.3},
+{y:2014,team:'MIA',ppg:27.1,rpg:6.9,apg:6.3},
+{y:2015,team:'CLE',ppg:25.3,rpg:7.4,apg:6.8},
+{y:2016,team:'CLE',ppg:26.4,rpg:8.6,apg:8.7},
+{y:2017,team:'CLE',ppg:26.4,rpg:8.6,apg:8.7},
+{y:2018,team:'LAL',ppg:27.4,rpg:8.5,apg:8.3},
+{y:2019,team:'LAL',ppg:25.3,rpg:7.8,apg:10.2},
+{y:2020,team:'LAL',ppg:25.3,rpg:7.8,apg:10.2},
+{y:2021,team:'LAL',ppg:25.0,rpg:7.7,apg:7.8},
+{y:2022,team:'LAL',ppg:30.3,rpg:8.2,apg:6.2},
+{y:2023,team:'LAL',ppg:28.9,rpg:8.1,apg:6.5},
+{y:2024,team:'LAL',ppg:27.6,rpg:8.1,apg:7.0}
+];
+const grid=document.getElementById('statsGrid');
+seasons.forEach(s=>{
+  const c=document.createElement('div');c.className='card';
+  c.innerHTML=`
+    <div style="display:flex;justify-content:space-between"><div>${s.y}</div><div>${s.team}</div></div>
+    <div>PPG: <span class="flip" data-value="${s.ppg}">0.0</span></div>
+    <div>RPG: <span class="flip" data-value="${s.rpg}">0.0</span></div>
+    <div>APG: <span class="flip" data-value="${s.apg}">0.0</span></div>
+  `;
+  grid.appendChild(c);
 });
 
-const navLinks = document.querySelectorAll("nav a");
-const pages = document.querySelectorAll(".page");
-
-navLinks.forEach(link => {
-  link.addEventListener("click", e => {
-    e.preventDefault();
-    const target = link.getAttribute("data-target");
-    pages.forEach(p => p.classList.remove("active"));
-    document.getElementById(target).classList.add("active");
-    window.scrollTo(0, 0);
+// Flipboard animation
+function animateFlips(){
+  document.querySelectorAll('.flip').forEach(el=>{
+    const target=parseFloat(el.dataset.value)||0;
+    let cur=0; const step=Math.max(0.05,target/40);
+    const t=setInterval(()=>{cur+=step;if(cur+0.01>=target){el.textContent=target.toFixed(1);clearInterval(t);}else el.textContent=cur.toFixed(1);},18);
   });
-});
+}
+window.addEventListener('load',animateFlips);
+
+// --- Mini-Game ---
+const ball=document.getElementById('ball');const hoop=document.querySelector('.hoop');const hoopArea=document.getElementById('hoopArea');let dragging=false,shiftX=0,shiftY=0;
+function onPointerDown(e){e.preventDefault();dragging=true;const rect=ball.getBoundingClientRect();const clientX=e.touches?e.touches[0].clientX:e.clientX;const clientY=e.touches?e.touches[0].clientY:e.clientY;shiftX=clientX-rect.left;shiftY=clientY-rect.top;}
+function onPointerMove(e){if(!dragging) return;e.preventDefault();const clientX=e.touches?e.touches[0].clientX:e.clientX;const clientY=e.touches?e.touches[0].clientY:e.clientY;const areaRect=hoopArea.getBoundingClientRect();let x=clientX-areaRect.left-shiftX;let y=clientY-areaRect.top-shiftY;x=Math.max(0,Math.min(areaRect.width-44,x));y=Math.max(0,Math.min(areaRect.height-44,y));ball.style.left=x+'px';ball.style.top=y+'px';ball.style.bottom='auto';}
+function onPointerUp(e){if(!dragging) return;dragging=false;const ballRect=ball.getBoundingClientRect();const hoopRect=hoop.getBoundingClientRect();const bx=ballRect.left+ballRect.width/2;const by=ballRect.top+ballRect.height/2;if(bx>hoopRect.left&&bx<hoopRect.right&&by>hoopRect.top&&by<hoopRect.bottom+40){launchConfetti();resetBall();}else{resetBall();}}
+function resetBall(){ball.style.transition='left 0.35s ease, top 0.35s ease';const areaRect=hoopArea.getBoundingClientRect();ball.style.left=(areaRect.width-44)/2+'px';ball.style.top=areaRect.height-62+'px';setTimeout(()=>{ball.style.transition='';},400);}
+ball.addEventListener('mousedown',onPointerDown);ball.addEventListener('touchstart',onPointerDown,{passive:false});
+document.addEventListener('mousemove',onPointerMove);document.addEventListener('touchmove',onPointerMove,{passive:false});
+document.addEventListener('mouseup',onPointerUp);document.addEventListener('touchend',onPointerUp);
+function launchConfetti(){for(let i=0;i<36;i++){const d=document.createElement('div');d.className='confetti-piece';d.style.left=(Math.random()*hoopArea.clientWidth)+'px';d.style.top=(Math.random()*80+30)+'px';d.style.background=(Math.random()>0.5)?'#f2c94c':'#d94800';d.style.opacity='1';hoopArea.appendChild(d);d.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:`translate(${(Math.random()*2-1)*120}px,${-(Math.random()*260+80)}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:900+Math.random()*400,easing:'cubic-bezier(.2,.7,.2,1)'});setTimeout(()=>d.remove(),1400);}}
+window.addEventListener('load',()=>{const areaRect=hoopArea.getBoundingClientRect();ball.style.left=(areaRect.width-44)/2+'px';ball.style.top=areaRect.height-62+'px';});
 </script>
 
 </body>
