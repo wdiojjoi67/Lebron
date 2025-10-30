@@ -1,28 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LeBron James — Ultimate Fan Page</title>
 <style>
-:root{--bg:#0b0526;--accent:#f2c94c;--panel:#1b1236}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-body{background:linear-gradient(180deg,#080316,#0b0526);color:#fff;overflow-x:hidden;scroll-behavior:smooth}
-header{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(0,0,0,0.45);padding:8px 12px;border-radius:999px;display:flex;gap:8px;align-items:center}
-header a{color:#ddd;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
-header a:hover{color:var(--accent)}
-header a.active{color:var(--accent)}
-section{min-height:100vh;padding:100px 18px 60px 18px;display:flex;flex-direction:column;align-items:center;gap:18px;opacity:0;transform:translateY(40px);transition:all 0.7s ease}
-section.active{opacity:1;transform:translateY(0)}
-h1,h2{color:var(--accent);text-align:center}
-.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);min-width:220px;box-shadow:0 12px 36px rgba(0,0,0,0.55);margin:12px}
-.stats-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:1000px}
-.flip{display:inline-block;min-width:48px;text-align:right;font-family:monospace}
-.hoop-area{position:relative;height:260px;width:360px;margin:24px auto;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border-radius:12px;border:1px solid rgba(255,255,255,0.03);display:flex;align-items:flex-end;justify-content:center}
-.hoop{position:absolute;top:28px;width:120px;height:14px;border-radius:8px;background:var(--accent);left:50%;transform:translateX(-50%);box-shadow:0 6px 22px rgba(242,201,76,0.12)}
-.ball{position:absolute;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);bottom:18px;left:50%;transform:translateX(-50%);cursor:grab;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff}
-.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;opacity:0;}
-footer{text-align:center;color:#cfc7d6;margin-top:34px;padding-bottom:34px}
+:root{
+  --bg:#0b0526;
+  --accent:#f2c94c;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:var(--bg);color:#fff;overflow-x:hidden;}
+header{position:fixed;top:0;left:0;width:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;gap:10px;padding:10px;z-index:1000;}
+header a{color:#ddd;text-decoration:none;padding:8px 12px;border-radius:8px;}
+header a.active, header a:hover{color:var(--accent);}
+section{min-height:100vh;padding:120px 20px 60px 20px;display:flex;flex-direction:column;align-items:center;gap:20px;opacity:0;transform:translateY(40px);transition:all 0.7s ease;}
+section.active{opacity:1;transform:translateY(0);}
+h1,h2{color:var(--accent);}
+.card{background:rgba(255,255,255,0.05);padding:15px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);min-width:220px;box-shadow:0 12px 36px rgba(0,0,0,0.5);}
+.stats-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:1000px;}
+.flip{display:inline-block;min-width:48px;text-align:right;font-family:monospace;font-weight:bold;}
+.achievement-sound{display:none;}
 </style>
 </head>
 <body>
@@ -37,12 +35,12 @@ footer{text-align:center;color:#cfc7d6;margin-top:34px;padding-bottom:34px}
 
 <section id="home" class="active">
 <h1>🏀 LeBron James — The King 👑</h1>
-<p>Welcome to the ultimate fan page with stats, achievements, and interactive mini-game!</p>
+<p>Welcome to the ultimate interactive fan page with stats, achievements, and mini-game!</p>
 </section>
 
 <section id="bio">
 <h2>📖 Bio</h2>
-<p>LeBron Raymone James, born December 30, 1984, Akron, Ohio. From high school prodigy to NBA legend, this section gives a detailed look at his life and legacy. Timeline animations show milestones in his career.</p>
+<p>LeBron Raymone James, born December 30, 1984 in Akron, Ohio. From high school prodigy to NBA legend, this page shows his stats, achievements, and interactive experiences for fans.</p>
 </section>
 
 <section id="career">
@@ -53,32 +51,33 @@ footer{text-align:center;color:#cfc7d6;margin-top:34px;padding-bottom:34px}
 <section id="achievements">
 <h2>🏆 Achievements</h2>
 <div class="stats-grid">
-<div class="card">4× NBA Champion (2012, 2013, 2016, 2020)</div>
-<div class="card">4× NBA MVP (2009, 2010, 2012, 2013)</div>
-<div class="card">19× NBA All-Star</div>
-<div class="card">2× Olympic Gold Medalist (2008, 2012)</div>
-<div class="card">4× NBA Finals MVP</div>
+  <div class="card achievement">4× NBA Champion</div>
+  <div class="card achievement">4× NBA MVP</div>
+  <div class="card achievement">19× NBA All-Star</div>
+  <div class="card achievement">2× Olympic Gold Medalist</div>
+  <div class="card achievement">4× NBA Finals MVP</div>
 </div>
+<audio id="achievementSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
 </section>
 
 <section id="game">
 <h2>🏀 Mini-Game</h2>
 <p>Drag the basketball into the hoop to celebrate with confetti!</p>
-<div class="hoop-area" id="hoopArea">
-  <div class="hoop"></div>
-  <div class="ball" id="ball">🏀</div>
+<div style="position:relative;width:360px;height:260px;margin:20px auto;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:flex-end;justify-content:center;" id="hoopArea">
+  <div style="position:absolute;top:28px;width:120px;height:14px;border-radius:8px;background:var(--accent);left:50%;transform:translateX(-50%);box-shadow:0 6px 22px rgba(242,201,76,0.12);" class="hoop"></div>
+  <div style="position:absolute;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);bottom:18px;left:50%;transform:translateX(-50%);cursor:grab;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;" id="ball">🏀</div>
 </div>
 </section>
 
-<footer>Built with ❤️ for LeBron fans</footer>
+<footer style="text-align:center;margin-top:30px;padding-bottom:30px;color:#cfc7d6;">Built with ❤️ for LeBron fans</footer>
 
 <script>
-// --- Navigation ---
+// Navigation
 const links=document.querySelectorAll('.nav-link');
 const sections=document.querySelectorAll('section');
 links.forEach(l=>l.addEventListener('click',e=>{
   e.preventDefault();
-  let target=document.querySelector(l.getAttribute('href'));
+  const target=document.querySelector(l.getAttribute('href'));
   sections.forEach(s=>s.classList.remove('active'));
   target.classList.add('active');
   links.forEach(a=>a.classList.remove('active'));
@@ -86,7 +85,7 @@ links.forEach(l=>l.addEventListener('click',e=>{
   window.scrollTo({top:0,behavior:'smooth'});
 }));
 
-// --- Career Stats 2003-2024 ---
+// Career Stats
 const seasons=[
 {y:2003,team:'CLE',ppg:20.9,rpg:5.5,apg:5.9},
 {y:2004,team:'CLE',ppg:27.2,rpg:7.4,apg:7.2},
@@ -114,16 +113,14 @@ const seasons=[
 const grid=document.getElementById('statsGrid');
 seasons.forEach(s=>{
   const c=document.createElement('div');c.className='card';
-  c.innerHTML=`
-    <div style="display:flex;justify-content:space-between"><div>${s.y}</div><div>${s.team}</div></div>
-    <div>PPG: <span class="flip" data-value="${s.ppg}">0.0</span></div>
-    <div>RPG: <span class="flip" data-value="${s.rpg}">0.0</span></div>
-    <div>APG: <span class="flip" data-value="${s.apg}">0.0</span></div>
-  `;
+  c.innerHTML=`<div style="display:flex;justify-content:space-between"><div>${s.y}</div><div>${s.team}</div></div>
+  <div>PPG: <span class="flip" data-value="${s.ppg}">0.0</span></div>
+  <div>RPG: <span class="flip" data-value="${s.rpg}">0.0</span></div>
+  <div>APG: <span class="flip" data-value="${s.apg}">0.0</span></div>`;
   grid.appendChild(c);
 });
 
-// Flipboard animation
+// Flip animation
 function animateFlips(){
   document.querySelectorAll('.flip').forEach(el=>{
     const target=parseFloat(el.dataset.value)||0;
@@ -133,17 +130,19 @@ function animateFlips(){
 }
 window.addEventListener('load',animateFlips);
 
-// --- Mini-Game ---
-const ball=document.getElementById('ball');const hoop=document.querySelector('.hoop');const hoopArea=document.getElementById('hoopArea');let dragging=false,shiftX=0,shiftY=0;
-function onPointerDown(e){e.preventDefault();dragging=true;const rect=ball.getBoundingClientRect();const clientX=e.touches?e.touches[0].clientX:e.clientX;const clientY=e.touches?e.touches[0].clientY:e.clientY;shiftX=clientX-rect.left;shiftY=clientY-rect.top;}
-function onPointerMove(e){if(!dragging) return;e.preventDefault();const clientX=e.touches?e.touches[0].clientX:e.clientX;const clientY=e.touches?e.touches[0].clientY:e.clientY;const areaRect=hoopArea.getBoundingClientRect();let x=clientX-areaRect.left-shiftX;let y=clientY-areaRect.top-shiftY;x=Math.max(0,Math.min(areaRect.width-44,x));y=Math.max(0,Math.min(areaRect.height-44,y));ball.style.left=x+'px';ball.style.top=y+'px';ball.style.bottom='auto';}
-function onPointerUp(e){if(!dragging) return;dragging=false;const ballRect=ball.getBoundingClientRect();const hoopRect=hoop.getBoundingClientRect();const bx=ballRect.left+ballRect.width/2;const by=ballRect.top+ballRect.height/2;if(bx>hoopRect.left&&bx<hoopRect.right&&by>hoopRect.top&&by<hoopRect.bottom+40){launchConfetti();resetBall();}else{resetBall();}}
-function resetBall(){ball.style.transition='left 0.35s ease, top 0.35s ease';const areaRect=hoopArea.getBoundingClientRect();ball.style.left=(areaRect.width-44)/2+'px';ball.style.top=areaRect.height-62+'px';setTimeout(()=>{ball.style.transition='';},400);}
-ball.addEventListener('mousedown',onPointerDown);ball.addEventListener('touchstart',onPointerDown,{passive:false});
-document.addEventListener('mousemove',onPointerMove);document.addEventListener('touchmove',onPointerMove,{passive:false});
-document.addEventListener('mouseup',onPointerUp);document.addEventListener('touchend',onPointerUp);
-function launchConfetti(){for(let i=0;i<36;i++){const d=document.createElement('div');d.className='confetti-piece';d.style.left=(Math.random()*hoopArea.clientWidth)+'px';d.style.top=(Math.random()*80+30)+'px';d.style.background=(Math.random()>0.5)?'#f2c94c':'#d94800';d.style.opacity='1';hoopArea.appendChild(d);d.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:`translate(${(Math.random()*2-1)*120}px,${-(Math.random()*260+80)}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:900+Math.random()*400,easing:'cubic-bezier(.2,.7,.2,1)'});setTimeout(()=>d.remove(),1400);}}
-window.addEventListener('load',()=>{const areaRect=hoopArea.getBoundingClientRect();ball.style.left=(areaRect.width-44)/2+'px';ball.style.top=areaRect.height-62+'px';});
+// Achievements sound
+const achievementSound=document.getElementById('achievementSound');
+document.querySelectorAll('.achievement').forEach(a=>{
+  a.addEventListener('mouseenter',()=>{achievementSound.currentTime=0;achievementSound.play();});
+});
+
+// Mini-game (drag hoop)
+const ball=document.getElementById('ball');
+const hoopArea=document.getElementById('hoopArea');
+let dragging=false,shiftX=0,shiftY=0;
+ball.addEventListener('mousedown',e=>{dragging=true;shiftX=e.offsetX;shiftY=e.offsetY;});
+document.addEventListener('mousemove',e=>{if(!dragging) return;const rect=hoopArea.getBoundingClientRect();let x=e.clientX-rect.left-shiftX;let y=e.clientY-rect.top-shiftY;x=Math.max(0,Math.min(rect.width-44,x));y=Math.max(0,Math.min(rect.height-44,y));ball.style.left=x+'px';ball.style.top=y+'px';});
+document.addEventListener('mouseup',()=>{dragging=false;ball.style.left='50%';ball.style.bottom='18px';ball.style.top='auto';});
 </script>
 
 </body>
