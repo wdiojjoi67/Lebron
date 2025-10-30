@@ -1,127 +1,106 @@
-<!doctype html>
+from pathlib import Path
+import shutil
+import zipfile
+import wave
+import struct
+import math
+
+# Setup paths
+base = Path("/mnt/data/lebron_fan_page")
+images_dir = base / "images"
+sounds_dir = base / "sounds"
+base.mkdir(parents=True, exist_ok=True)
+images_dir.mkdir(parents=True, exist_ok=True)
+sounds_dir.mkdir(parents=True, exist_ok=True)
+
+# Source images (provided in the conversation)
+src_images = {
+    "lebron_2003.png": Path("/mnt/data/5f8d5f7e-f4b1-4df3-b1cc-d16b35b5a31e.png"),
+    "lebron_2010.png": Path("/mnt/data/0c46a36e-d1b5-46b4-b27f-6744d1e450ae.png"),
+    "lebron_2014.png": Path("/mnt/data/486c541e-cfbd-4f9a-9f16-0e1131f66e88.png"),
+    "lebron_2018.png": Path("/mnt/data/ebc8cdb6-0323-49fd-9edc-fd3d66b80d76.png"),
+    "extra1.png": Path("/mnt/data/3986cbe4-fec9-4782-b491-6a739cca58fd.png")
+}
+
+# Copy images if they exist
+for dest_name, src_path in src_images.items():
+    dest_path = images_dir / dest_name
+    if src_path.exists():
+        shutil.copy(src_path, dest_path)
+    else:
+        # create a tiny placeholder if missing
+        with open(dest_path, "wb") as f:
+            f.write(b"")
+
+# Create a short WAV "achievement" sound (sine beep) as a placeholder
+wav_path = sounds_dir / "achievement.wav"
+framerate = 44100
+duration_s = 0.28
+frequency = 880.0  # A5 beep
+amplitude = 16000
+nframes = int(duration_s * framerate)
+with wave.open(str(wav_path), 'w') as wf:
+    wf.setnchannels(1)
+    wf.setsampwidth(2)  # 2 bytes per sample
+    wf.setframerate(framerate)
+    for i in range(nframes):
+        t = i / framerate
+        value = int(amplitude * math.sin(2 * math.pi * frequency * t) * (1 - t/duration_s))
+        data = struct.pack('<h', value)
+        wf.writeframesraw(data)
+
+# Write the index.html file (slideshow + stats + swipe + autoplay)
+index_html = r'''<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>LeBron James — Ultimate Fan Hub (Slideshow + Stats)</title>
+<title>LeBron — Ultimate Fan Hub (Slideshow with Stats)</title>
 <style>
-:root{
-  --bg:#060416; --accent:#f2c94c; --accent-deep:#c8942a; --muted:#bfb8c6;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-  background: linear-gradient(180deg,#050313,#060216); color:#fff; -webkit-font-smoothing:antialiased;
-  overflow:hidden;
-}
-/* Header */
+:root{--bg:#060416;--accent:#f2c94c;--accent-deep:#c8942a;--muted:#bfb8c6}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:linear-gradient(180deg,#050313,#060216);color:#fff;overflow:hidden}
 .header{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:1200;width:min(1100px,96%);display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
-.brand{display:flex;gap:10px;align-items:center}
-.brand .crown{font-size:20px}
-.nav{display:flex;gap:8px}
-.nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:12px;font-weight:800}
-.nav a.active,.nav a:hover{color:#1b0632;background:linear-gradient(90deg,var(--accent),var(--accent-deep));transform:translateY(-2px)}
+.brand{display:flex;gap:10px;align-items:center}.brand .crown{font-size:20px}.nav{display:flex;gap:8px}.nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:12px;font-weight:800}.nav a.active,.nav a:hover{color:#1b0632;background:linear-gradient(90deg,var(--accent),var(--accent-deep));transform:translateY(-2px)}
 .container{position:fixed;top:72px;left:50%;transform:translateX(-50%);width:min(1100px,96%);bottom:18px;border-radius:18px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.004));box-shadow:0 30px 80px rgba(0,0,0,0.6);overflow:hidden}
-
-/* SLIDESHOW region */
-.slideshow{
-  position:relative;height:100%;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.25));
-}
-.slide{
-  position:absolute;inset:0;display:flex;gap:24px;align-items:center;padding:34px;transition:all 700ms cubic-bezier(.2,.9,.22,1);opacity:0;transform:translateX(40px) scale(.995);pointer-events:none;
-}
+.slideshow{position:relative;height:100%;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.25))}
+.slide{position:absolute;inset:0;display:flex;gap:24px;align-items:center;padding:34px;transition:all 700ms cubic-bezier(.2,.9,.22,1);opacity:0;transform:translateX(40px) scale(.995);pointer-events:none}
 .slide.active{opacity:1;transform:translateX(0) scale(1);pointer-events:auto}
-.slide .left{flex:1;min-width:320px}
+.slide .left{flex:1;min-width:260px}
 .slide .right{flex:1;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
 .hero-image{width:420px;height:420px;border-radius:16px;object-fit:cover;box-shadow:0 30px 80px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.04)}
 .title{font-size:30px;color:var(--accent);font-weight:900}
 .subtitle{color:var(--muted);max-width:520px;line-height:1.45}
-
-/* stat scoreboard area */
 .scoreboard-panel{display:flex;gap:12px;align-items:center;margin-top:12px}
 .stat-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);min-width:140px;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
-.stat-card .label{font-size:12px;color:var(--muted)}
-.stat-card .value{font-family:monospace;font-weight:900;font-size:22px}
-
-/* slot/strip for rolling numbers */
-.slot{width:100px;height:44px;overflow:hidden;border-radius:8px;background:rgba(0,0,0,0.12);padding:6px;border:1px solid rgba(255,255,255,0.03)}
-.strip{position:relative;top:0;transition:transform 900ms cubic-bezier(.2,.9,.22,1)}
-.strip div{height:44px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-weight:900;font-family:monospace}
-
-/* controls */
+.stat-card .label{font-size:12px;color:var(--muted)}.stat-card .value{font-family:monospace;font-weight:900;font-size:22px}
+.slot{width:100px;height:44px;overflow:hidden;border-radius:8px;background:rgba(0,0,0,0.12);padding:6px;border:1px solid rgba(255,255,255,0.03)}.strip{position:relative;top:0;transition:transform 900ms cubic-bezier(.2,.9,.22,1)}.strip div{height:44px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-weight:900;font-family:monospace}
 .controls{position:absolute;left:18px;bottom:18px;display:flex;gap:8px;align-items:center}
 .btn{background:linear-gradient(90deg,var(--accent),var(--accent-deep));padding:8px 12px;border-radius:8px;border:none;color:#1b0632;font-weight:900;cursor:pointer}
-.arrows{position:absolute;right:18px;bottom:18px;display:flex;gap:8px}
-.arrow{background:rgba(255,255,255,0.04);padding:8px;border-radius:8px;cursor:pointer}
-
-/* dots */
-.dots{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;display:flex;gap:8px}
-.dot{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,0.06);cursor:pointer}
-.dot.active{background:linear-gradient(90deg,var(--accent),var(--accent-deep));box-shadow:0 8px 24px rgba(242,201,76,0.12)}
-
-/* achievements / gallery / mini-game boxes */
-.section-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-top:10px}
-.achievement{padding:12px;border-radius:10px;background:linear-gradient(180deg,#241033,#1b1236);cursor:pointer;min-width:180px}
-.gallery{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-.gallery img{height:110px;border-radius:8px;object-fit:cover;cursor:pointer}
-
-/* mini-game */
-.hoop-area{width:420px;height:320px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);position:relative;border:1px solid rgba(255,255,255,0.02)}
-.hoop{position:absolute;top:44px;left:50%;transform:translateX(-50%);width:160px;height:18px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-deep))}
-.ball{position:absolute;width:56px;height:56px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 20px 60px rgba(0,0,0,0.6);cursor:grab}
+.arrows{position:absolute;right:18px;bottom:18px;display:flex;gap:8px}.arrow{background:rgba(255,255,255,0.04);padding:8px;border-radius:8px;cursor:pointer}
+.dots{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;display:flex;gap:8px}.dot{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,0.06);cursor:pointer}.dot.active{background:linear-gradient(90deg,var(--accent),var(--accent-deep));box-shadow:0 8px 24px rgba(242,201,76,0.12)}
+.hoop-area{width:420px;height:320px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);position:relative;border:1px solid rgba(255,255,255,0.02)}.hoop{position:absolute;top:44px;left:50%;transform:translateX(-50%);width:160px;height:18px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-deep))}.ball{position:absolute;width:56px;height:56px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 20px 60px rgba(0,0,0,0.6);cursor:grab}
 .score{position:absolute;right:18px;top:18px;background:rgba(0,0,0,0.35);padding:8px;border-radius:8px;font-weight:900;color:var(--accent)}
-
-/* lightbox */
-#lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1500}
-#lightbox img{max-width:92%;max-height:86%;border-radius:8px}
-
-/* responsive */
-@media (max-width:920px){
-  .slide{flex-direction:column;align-items:center}
-  .hero-image{width:260px;height:260px}
-  .title{font-size:22px}
-}
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1500}#lightbox img{max-width:92%;max-height:86%;border-radius:8px}
+@media (max-width:920px){.slide{flex-direction:column;align-items:center}.hero-image{width:260px;height:260px}.title{font-size:22px}}
 </style>
 </head>
 <body>
   <div class="header" role="banner">
     <div class="brand"><div class="crown">👑</div><div style="margin-left:6px"><div style="font-weight:900;color:var(--accent)">LeBron — The King Fan Hub</div><div style="font-size:12px;color:var(--muted)">2003–2024 Stats Slideshow</div></div></div>
-    <nav class="nav" role="navigation">
-      <a href="#" class="nav-link active">Slideshow</a>
-      <a href="#" class="nav-link">Achievements</a>
-      <a href="#" class="nav-link">Gallery</a>
-      <a href="#" class="nav-link">Mini-Game</a>
-    </nav>
+    <nav class="nav" role="navigation"><a href="#" class="nav-link active">Slideshow</a></nav>
   </div>
 
   <div class="container" role="main">
     <div class="slideshow" id="slideshow">
-
-      <!-- Slides are generated by JS. Template block below for reference; actual slides appended by script -->
-      <!-- Controls -->
-      <div class="controls">
-        <button id="playPause" class="btn">Pause</button>
-        <button id="autoplayToggle" class="btn" style="background:linear-gradient(90deg,#fff4b8,#f2c94c)">Autoplay</button>
-      </div>
-      <div class="arrows">
-        <div id="prev" class="arrow">◀</div>
-        <div id="next" class="arrow">▶</div>
-      </div>
+      <div class="controls"><button id="playPause" class="btn">Pause</button><button id="autoplayToggle" class="btn" style="background:linear-gradient(90deg,#fff4b8,#f2c94c)">Autoplay</button></div>
+      <div class="arrows"><div id="prev" class="arrow">◀</div><div id="next" class="arrow">▶</div></div>
       <div class="dots" id="dots"></div>
-
     </div>
   </div>
 
-  <!-- lightbox -->
-  <div id="lightbox" onclick="closeLB()"><img src="" alt="lightbox"></div>
+  <div id="lightbox" onclick="this.style.display='none'"><img src="" alt=""></div>
 
 <script>
-/* ---------------------------
-   Season stats (PPG/RPG/APG) - verified values used here
-   Note: these values were compiled from reliable public stats (match what you see on major stat sites).
-   Years: 2003 - 2024 inclusive
---------------------------- */
 const seasons = [
   {y:2003,team:'CLE',ppg:20.9,rpg:5.5,apg:5.9},
   {y:2004,team:'CLE',ppg:27.2,rpg:7.4,apg:7.2},
@@ -147,206 +126,157 @@ const seasons = [
   {y:2024,team:'LAL',ppg:27.6,rpg:8.1,apg:7.0}
 ];
 
-/* image mapping (use the images you supplied — put them in images/ folder with these names) */
 const eraImageMap = [
-  {from:2003,to:2010,src:'images/lebron_2003.png',bg:'#2a1640'},  // Cleveland era #1
-  {from:2010,to:2014,src:'images/lebron_2010.png',bg:'#10273a'},  // Miami era
-  {from:2014,to:2018,src:'images/lebron_2014.png',bg:'#2a1640'},  // Cleveland era #2
-  {from:2018,to:2025,src:'images/lebron_2018.png',bg:'#1a1730'}   // Lakers era
+  {from:2003,to:2010,src:'images/lebron_2003.png'},
+  {from:2010,to:2014,src:'images/lebron_2010.png'},
+  {from:2014,to:2018,src:'images/lebron_2014.png'},
+  {from:2018,to:2025,src:'images/lebron_2018.png'}
 ];
 
-/* Build slides dynamically */
 const slideshow = document.getElementById('slideshow');
 const dotsContainer = document.getElementById('dots');
-
 let slides = [];
-seasons.forEach((s, idx)=>{
-  const sl = document.createElement('div'); sl.className='slide';
-  // determine era image/background
-  let era = eraImageMap.find(e=> s.y >= e.from && s.y < e.to);
-  if(!era) era = eraImageMap[eraImageMap.length-1];
-  // slide inner HTML
+
+// build slides
+seasons.forEach((s, idx) => {
+  const sl = document.createElement('div'); sl.className = 'slide';
+  let era = eraImageMap.find(e => s.y >= e.from && s.y < e.to) || eraImageMap[eraImageMap.length-1];
   sl.innerHTML = `
-    <div class="left">
-      <img class="hero-image" src="${era.src}" alt="LeBron ${s.y}" onerror="this.style.opacity=.12">
-    </div>
+    <div class="left"><img class="hero-image" src="${era.src}" alt="LeBron ${s.y}" onerror="this.style.opacity=.12"></div>
     <div class="right">
       <div class="title">Season ${s.y} — ${s.team}</div>
-      <div class="subtitle">Team: ${s.team} • Season year: ${s.y} • Click the card to roll the numbers or use arrows/dots to navigate.</div>
+      <div class="subtitle">Team: ${s.team} • Year: ${s.y}</div>
       <div class="scoreboard-panel">
-        <div class="stat-card">
-          <div class="label">PPG</div>
-          <div class="value"><div class="slot" data-type="ppg"></div></div>
-        </div>
-        <div class="stat-card">
-          <div class="label">RPG</div>
-          <div class="value"><div class="slot" data-type="rpg"></div></div>
-        </div>
-        <div class="stat-card">
-          <div class="label">APG</div>
-          <div class="value"><div class="slot" data-type="apg"></div></div>
-        </div>
+        <div class="stat-card"><div class="label">PPG</div><div class="value"><div class="slot" data-type="ppg"></div></div></div>
+        <div class="stat-card"><div class="label">RPG</div><div class="value"><div class="slot" data-type="rpg"></div></div></div>
+        <div class="stat-card"><div class="label">APG</div><div class="value"><div class="slot" data-type="apg"></div></div></div>
       </div>
-      <div style="margin-top:12px" class="small">Click this slide to animate its stats with a slot-style roll.</div>
+      <div class="small" style="color:var(--muted);margin-top:12px">Click slide to roll numbers. Swipe left/right or use arrows. Hover to pause autoplay.</div>
     </div>
   `;
-  // attach season data for later
-  sl.dataset.year = s.y;
-  sl.dataset.ppg = s.ppg;
-  sl.dataset.rpg = s.rpg;
-  sl.dataset.apg = s.apg;
-  slideshow.appendChild(sl);
-  slides.push(sl);
-  // dot
-  const dot = document.createElement('div'); dot.className='dot'; dot.dataset.idx = idx;
-  dot.addEventListener('click', ()=> goTo(idx, true));
+  sl.dataset.year = s.y; sl.dataset.ppg = s.ppg; sl.dataset.rpg = s.rpg; sl.dataset.apg = s.apg;
+  slideshow.appendChild(sl); slides.push(sl);
+  const dot = document.createElement('div'); dot.className = 'dot'; dot.dataset.idx = idx;
+  dot.addEventListener('click', () => goTo(idx, true));
   dotsContainer.appendChild(dot);
 });
 
-/* show first slide */
 let current = 0;
 function updateActive(){
   slides.forEach((sl,i)=> sl.classList.toggle('active', i===current));
-  const dots = Array.from(document.querySelectorAll('.dot'));
-  dots.forEach((d,i)=> d.classList.toggle('active', i===current));
-  // pre-roll small animation for visible slide
+  Array.from(document.querySelectorAll('.dot')).forEach((d,i)=> d.classList.toggle('active', i===current));
   prepareSlots(slides[current]);
+  // animate after small delay
+  setTimeout(()=> animateSlideSlots(slides[current]), 320);
 }
 updateActive();
 
-/* autoplay */
-let autoplay = true;
-let playing = true;
-let autoplayDelay = 4200;
-let autoplayTimer = null;
-function startAutoplay(){
-  if(!autoplay) return;
-  clearInterval(autoplayTimer);
-  autoplayTimer = setInterval(()=>{ nextSlide(true); }, autoplayDelay);
-}
+/* autoplay & controls */
+let autoplay = true, playing = true, autoplayDelay = 4200, autoplayTimer = null;
+function startAutoplay(){ if(!autoplay) return; clearInterval(autoplayTimer); autoplayTimer = setInterval(()=>{ nextSlide(false); }, autoplayDelay); }
 function stopAutoplay(){ clearInterval(autoplayTimer); autoplayTimer = null; }
-
 startAutoplay();
 
-/* controls */
 document.getElementById('playPause').addEventListener('click', ()=>{
-  playing = !playing;
-  document.getElementById('playPause').textContent = playing ? 'Pause' : 'Play';
+  playing = !playing; document.getElementById('playPause').textContent = playing ? 'Pause' : 'Play';
   if(playing) startAutoplay(); else stopAutoplay();
 });
 document.getElementById('autoplayToggle').addEventListener('click', ()=>{
-  autoplay = !autoplay;
-  document.getElementById('autoplayToggle').textContent = autoplay ? 'Autoplay' : 'Manual';
+  autoplay = !autoplay; document.getElementById('autoplayToggle').textContent = autoplay ? 'Autoplay':'Manual';
   if(autoplay && playing) startAutoplay(); else stopAutoplay();
 });
 document.getElementById('prev').addEventListener('click', ()=> prevSlide(true));
 document.getElementById('next').addEventListener('click', ()=> nextSlide(true));
 
-function prevSlide(user){
-  current = (current - 1 + slides.length) % slides.length;
-  updateActive();
-  if(user) { stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; }
-}
-function nextSlide(user){
-  current = (current + 1) % slides.length;
-  updateActive();
-  if(user) { stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; }
-}
-function goTo(idx, user){
-  current = idx % slides.length;
-  updateActive();
-  if(user) { stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; }
-}
+function prevSlide(user){ current = (current - 1 + slides.length) % slides.length; updateActive(); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
+function nextSlide(user){ current = (current + 1) % slides.length; updateActive(); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
+function goTo(idx, user){ current = idx % slides.length; updateActive(); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
 
-/* Dots also clickable - already wired */
-
-/* Prepare slot elements inside a slide (create many numbers in strip) */
+/* prepare slot numbers in a slide */
 function prepareSlots(slide){
   const ppg = parseFloat(slide.dataset.ppg), rpg = parseFloat(slide.dataset.rpg), apg = parseFloat(slide.dataset.apg);
   const slots = slide.querySelectorAll('.slot');
   slots.forEach(slot=>{
-    // if already filled, skip
     if(slot._prepared) return;
     slot._prepared = true;
     const type = slot.dataset.type;
-    const target = type==='ppg' ? ppg : (type==='rpg' ? rpg : apg);
+    const target = type==='ppg'?ppg:(type==='rpg'?rpg:apg);
     const strip = document.createElement('div'); strip.className='strip';
     const step = 0.1;
-    for(let v=0.0; v <= target + 3; v = +(v + step).toFixed(1)){
+    for(let v=0.0; v<= target + 3; v = +(v + step).toFixed(1)){
       const d = document.createElement('div'); d.textContent = v.toFixed(1); strip.appendChild(d);
     }
-    slot.appendChild(strip);
-    // store strip reference for animation
-    slot._strip = strip;
+    slot.appendChild(strip); slot._strip = strip;
   });
 }
 
-/* animate visible slide's slots to their target values */
-function rollCurrent(){
-  const slide = slides[current];
-  animateSlideSlots(slide);
-}
+/* animate a slide's slots */
 function animateSlideSlots(slide){
-  const ppg = parseFloat(slide.dataset.ppg), rpg = parseFloat(slide.dataset.rpg), apg = parseFloat(slide.dataset.apg);
+  const p = parseFloat(slide.dataset.ppg), r = parseFloat(slide.dataset.rpg), a = parseFloat(slide.dataset.apg);
   const slotP = slide.querySelector('.slot[data-type="ppg"]');
   const slotR = slide.querySelector('.slot[data-type="rpg"]');
   const slotA = slide.querySelector('.slot[data-type="apg"]');
-  if(slotP && slotP._strip) animateStrip(slotP._strip, ppg);
-  if(slotR && slotR._strip) animateStrip(slotR._strip, rpg);
-  if(slotA && slotA._strip) animateStrip(slotA._strip, apg);
+  if(slotP && slotP._strip) animateStrip(slotP._strip, p);
+  if(slotR && slotR._strip) animateStrip(slotR._strip, r);
+  if(slotA && slotA._strip) animateStrip(slotA._strip, a);
 }
 
-/* The strip animation - slide up to index where value >= target with overshoot bounce */
+/* animate strip with overshoot bounce */
 function animateStrip(strip, target){
-  const items = Array.from(strip.children);
-  if(items.length === 0) return;
-  const height = items[0].getBoundingClientRect().height;
+  const nodes = Array.from(strip.children);
+  if(nodes.length===0) return;
+  const h = nodes[0].getBoundingClientRect().height;
   let idx = 0;
-  for(let i=0;i<items.length;i++){
-    if(parseFloat(items[i].textContent) >= target - 0.0001){ idx = i; break; }
-  }
-  const targetY = -(idx * height);
+  for(let i=0;i<nodes.length;i++){ if(parseFloat(nodes[i].textContent) >= target - 0.0001){ idx = i; break; } }
+  const targetY = -(idx * h);
   strip.style.transition = 'transform 900ms cubic-bezier(.2,.9,.22,1)';
   strip.style.transform = `translateY(${targetY}px)`;
   setTimeout(()=>{ strip.style.transition = 'transform 420ms cubic-bezier(.2,.6,.22,1)'; strip.style.transform = `translateY(${targetY + 8}px)`; }, 920);
   setTimeout(()=>{ strip.style.transition = 'transform 300ms cubic-bezier(.2,.9,.22,1)'; strip.style.transform = `translateY(${targetY}px)`; }, 1400);
 }
 
-/* click slide to animate its stats */
-slides.forEach((sl, i)=> sl.addEventListener('click', ()=> { prepareSlots(sl); animateSlideSlots(sl); sl.animate([{transform:'scale(1)'},{transform:'scale(1.03) rotate(-1deg)'},{transform:'scale(1)'}], {duration:520}); }));
+/* click slide to roll */
+slides.forEach(sl => sl.addEventListener('click', ()=>{ prepareSlots(sl); animateSlideSlots(sl); sl.animate([{transform:'scale(1)'},{transform:'scale(1.03) rotate(-1deg)'},{transform:'scale(1)'}], {duration:520}); }));
 
-/* ensure initial slide prepared */
 prepareSlots(slides[current]);
 
-/* autoplay cycling with roll on slide show change */
-setInterval(()=>{
-  if(autoplay && playing){
-    nextSlide(false);
-    // animate after a short delay so slide is visible
-    setTimeout(()=>{ prepareSlots(slides[current]); animateSlideSlots(slides[current]); }, 300);
-  }
-}, autoplayDelay);
+/* autoplay cycling to animate slots */
+let cycleInterval = setInterval(()=>{ if(autoplay && playing){ nextSlide(false); setTimeout(()=>{ prepareSlots(slides[current]); animateSlideSlots(slides[current]); }, 320); } }, autoplayDelay);
 
-/* Keyboard navigation */
-document.addEventListener('keydown', e=>{
-  if(e.key === 'ArrowRight') nextSlide(true);
-  if(e.key === 'ArrowLeft') prevSlide(true);
-  if(e.key === ' '){ playing = !playing; document.getElementById('playPause').textContent = playing ? 'Pause':'Play'; if(playing) startAutoplay(); else stopAutoplay(); }
-});
+/* swipe support */
+let touchStartX = 0, touchEndX = 0;
+slideshow.addEventListener('pointerdown', (e)=>{ touchStartX = e.clientX; });
+slideshow.addEventListener('pointerup', (e)=>{ touchEndX = e.clientX; const dx = touchEndX - touchStartX; if(Math.abs(dx) > 40){ if(dx < 0) nextSlide(true); else prevSlide(true); } });
 
-/* lightbox for gallery (if you have any gallery images later) */
-const lightbox = document.getElementById('lightbox');
-function closeLB(){ lightbox.style.display='none'; lightbox.querySelector('img').src=''; }
+/* pause autoplay on hover */
+slideshow.addEventListener('mouseenter', ()=>{ if(playing) stopAutoplay(); });
+slideshow.addEventListener('mouseleave', ()=>{ if(playing && autoplay) startAutoplay(); });
 
-/* Unlock audio on user gesture for browsers */
-const achSound = new Audio('sounds/achievement.mp3');
-function unlockAudio(){ achSound.play().then(()=>{ achSound.pause(); achSound.currentTime=0; }).catch(()=>{}); document.removeEventListener('pointerdown', unlockAudio); }
+/* audio unlock for browsers */
+const achievement = new Audio('sounds/achievement.wav');
+function unlockAudio(){ achievement.play().then(()=>{ achievement.pause(); achievement.currentTime=0; }).catch(()=>{}); document.removeEventListener('pointerdown', unlockAudio); }
 document.addEventListener('pointerdown', unlockAudio, {once:true});
 
-/* Mini-game and achievements are on other panels — you said "keep same except slideshow/stats & images" so they remain as before; if you want, I can add achievements/minigame here too. */
-
-/* If you'd like the actual ZIP created with the images you uploaded, say "make the ZIP" and I'll bundle this index.html + the images you supplied into a downloadable zip. */
-
+/* end */
 </script>
 </body>
 </html>
+'''
+
+# Write index.html
+(index_html_path := base / "index.html").write_text(index_html, encoding="utf-8")
+
+# Create ZIP
+zip_path = Path("/mnt/data/lebron_fan_page.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+    # add index.html
+    zf.write(index_html_path, arcname="index.html")
+    # add images folder contents
+    for img in images_dir.iterdir():
+        zf.write(img, arcname=f"images/{img.name}")
+    # add sounds
+    for s in sounds_dir.iterdir():
+        zf.write(s, arcname=f"sounds/{s.name}")
+
+str(zip_path)
+
