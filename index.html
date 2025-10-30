@@ -3,179 +3,118 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>LeBron James — Ultimate Fan Site (Modern Sleek)</title>
+<title>LeBron James — Ultimate Fan Hub (Modern Sleek)</title>
 <style>
 :root{
   --bg:#060416;
   --panel:#0f0820;
   --accent:#f2c94c;
-  --accent-2:#5b2a7a;
+  --accent-deep:#c8942a;
   --muted:#bfb8c6;
-  --glow: 0 8px 30px rgba(242,201,76,0.12);
-  --card-glow: 0 16px 48px rgba(91,42,122,0.08);
+  --glow: 0 12px 48px rgba(91,42,122,0.06);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
   background:
-    radial-gradient(1200px 600px at 10% 10%, rgba(91,42,122,0.08), transparent 10%),
-    radial-gradient(1000px 600px at 90% 90%, rgba(242,201,76,0.03), transparent 10%),
+    radial-gradient(1000px 500px at 14% 12%, rgba(91,42,122,0.06), transparent 10%),
+    radial-gradient(800px 420px at 86% 88%, rgba(242,201,76,0.03), transparent 10%),
     linear-gradient(180deg, var(--bg) 0%, #060216 100%);
   color:#fff;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
   -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
   overflow:hidden;
 }
 
-/* Header / nav */
+/* Header */
 .header-wrap{
-  position:fixed;
-  top:12px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:1200;
-  width:min(1100px,94%);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  padding:10px 12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  border-radius:999px;
+  position:fixed;top:14px;left:50%;transform:translateX(-50%);
+  z-index:1200;width:min(1150px,96%);display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:10px 14px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
   border:1px solid rgba(255,255,255,0.03);
-  box-shadow: var(--glow);
+  box-shadow:var(--glow);
 }
-.brand{
-  display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:0.6px;
-}
+.brand{display:flex;gap:10px;align-items:center}
 .brand .crown{font-size:20px}
-.nav{
-  display:flex;gap:8px;align-items:center;
-}
+.brand .name{font-weight:800;color:var(--accent);letter-spacing:.6px}
+.nav{display:flex;gap:8px;align-items:center}
 .nav a{
-  color:var(--muted);
-  text-decoration:none;
-  padding:8px 12px;
-  border-radius:10px;
-  font-weight:700;
-  font-size:13px;
-  transition:all .28s cubic-bezier(.2,.9,.25,1);
+  color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:800;font-size:13px;
+  transition:all .28s cubic-bezier(.2,.9,.25,1);display:inline-flex;align-items:center;gap:8px;
 }
-.nav a.active, .nav a:hover{
-  color:#1b0632;
-  background: linear-gradient(90deg, var(--accent), #d9b84a);
-  box-shadow: 0 8px 30px rgba(242,201,76,0.12);
-  transform:translateY(-2px);
+.nav a.active,.nav a:hover{
+  color:#1b0632;background:linear-gradient(90deg,var(--accent),var(--accent-deep));transform:translateY(-3px);box-shadow:0 10px 30px rgba(242,201,76,0.12);
 }
 
-/* container */
+/* container with panels */
 .container{
-  position:fixed;
-  top:64px;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(1100px,96%);
-  bottom:12px;
-  overflow:hidden;
-  border-radius:20px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-  padding:18px;
-  display:flex;
-  box-shadow: var(--card-glow);
+  position:fixed;top:74px;left:50%;transform:translateX(-50%);width:min(1150px,96%);bottom:18px;
+  border-radius:18px;padding:10px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.005));
+  box-shadow:0 30px 80px rgba(0,0,0,0.6);
 }
-
-/* page panels - only one visible at a time; slide transitions */
 .panel{
-  position:absolute;
-  inset:18px;
-  border-radius:14px;
-  padding:28px;
-  overflow:auto;
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-  display:none;
-  transform: translateX(30px) scale(.99);
-  opacity:0;
-  transition: all 450ms cubic-bezier(.2,.9,.22,1);
+  position:absolute;inset:12px;border-radius:12px;padding:28px;overflow:auto;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.005));
+  display:none;opacity:0;transform:translateX(36px) scale(.995);transition:all 520ms cubic-bezier(.2,.9,.22,1);
 }
-.panel.active{
-  display:block;
-  transform: translateX(0) scale(1);
-  opacity:1;
-}
+.panel.active{display:block;opacity:1;transform:translateX(0) scale(1)}
 
 /* headings */
 .h-hero{display:flex;gap:18px;align-items:center}
 .h-hero img{height:120px;border-radius:12px;box-shadow:0 18px 60px rgba(0,0,0,0.6)}
 .title{font-size:28px;color:var(--accent);text-shadow:0 6px 28px rgba(242,201,76,0.08)}
-.subtitle{color:var(--muted);margin-top:6px;max-width:680px;line-height:1.4}
+.subtitle{color:var(--muted);margin-top:6px;max-width:720px;line-height:1.45}
 
-/* stat cards grid */
+/* grid & card */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:18px}
-.card{
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  padding:14px;border-radius:10px;
-  border:1px solid rgba(255,255,255,0.03);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-}
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 34px rgba(0,0,0,0.55)}
+.small{font-size:13px;color:var(--muted)}
 
-/* rolling number slot style */
-.slot{
-  height:40px; width:90px; overflow:hidden; position:relative; display:inline-block; vertical-align:middle;
-  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006)); padding:6px 8px; border-radius:6px;
-  border:1px solid rgba(255,255,255,0.03); text-align:right; font-weight:900; font-family: "Courier New", monospace;
-}
-.slot .strip{position:absolute; left:6px; right:6px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:flex-start; transition: transform 900ms cubic-bezier(.2,.8,0,.9); will-change: transform;}
-.strip div{height:40px; display:flex; align-items:center; justify-content:flex-end; padding-right:6px; color:#fff; font-size:18px}
+/* slot machine style numbers */
+.slot{height:44px;width:96px;overflow:hidden;position:relative;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.005));padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);text-align:right;font-weight:900;font-family:monospace}
+.strip{position:absolute;left:6px;right:6px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:flex-start;transition:transform 900ms cubic-bezier(.2,.9,.22,1);will-change:transform}
+.strip div{height:44px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;color:#fff;font-size:18px}
 
-/* achievement style */
-.achievement-card{padding:14px;border-radius:10px;background:linear-gradient(180deg,#241033,#1b1236);display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:transform .35s, box-shadow .35s;}
-.achievement-card:hover{transform:translateY(-8px) scale(1.02); box-shadow:0 18px 60px rgba(242,201,76,0.18);}
+/* achievements */
+.ach-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.achievement-card{padding:14px;border-radius:10px;background:linear-gradient(180deg,#241033,#1b1236);display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:transform .35s,box-shadow .35s}
+.achievement-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 18px 60px rgba(242,201,76,0.18)}
 
 /* gallery */
 .gallery{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.gallery img{height:120px;border-radius:8px;object-fit:cover;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
+.gallery img{height:120px;border-radius:8px;object-fit:cover;box-shadow:0 12px 40px rgba(0,0,0,0.6);cursor:pointer;transition:transform .25s}
+.gallery img:hover{transform:translateY(-6px)}
 
-/* mini-game */
-.hoop-area{
-  width:360px;height:300px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.02);position:relative;
-  margin:18px auto 8px;
-}
-.hoop{
-  position:absolute;top:36px;left:50%;transform:translateX(-50%);width:140px;height:16px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#deb25a);box-shadow:0 8px 36px rgba(242,201,76,0.12)
-}
-.ball{position:absolute;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:radial-gradient(circle at 30% 30%, #ff8a00, #d94800);box-shadow:0 10px 30px rgba(0,0,0,0.6);cursor:grab}
+/* mini game */
+.hoop-area{width:360px;height:320px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border:1px solid rgba(255,255,255,0.02);position:relative;margin:18px auto}
+.hoop{position:absolute;top:38px;left:50%;transform:translateX(-50%);width:140px;height:18px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-deep));box-shadow:0 8px 36px rgba(242,201,76,0.12)}
+.ball{position:absolute;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);box-shadow:0 12px 34px rgba(0,0,0,0.6);cursor:grab;touch-action:none}
 .scoreboard{position:absolute;right:18px;top:18px;background:rgba(0,0,0,0.35);padding:8px 12px;border-radius:8px;font-weight:800;color:var(--accent)}
 
-/* confetti pieces used programmatically */
-.confetti-piece{position:absolute;width:10px;height:8px;border-radius:2px;opacity:0;}
+/* confetti */
+.confetti-piece{position:absolute;width:10px;height:8px;border-radius:2px;opacity:0}
 
-/* small utilities */
-.row{display:flex;gap:12px;align-items:center}
-.small{font-size:13px;color:var(--muted)}
-.footer{font-size:13px;color:#cfc7d6;text-align:center;padding:12px}
-@media (max-width:760px){
-  .header-wrap{width:96%;padding:8px}
-  .title{font-size:20px}
+/* lightbox */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:1400}
+#lightbox img{max-width:92%;max-height:86%;border-radius:8px;box-shadow:0 20px 80px rgba(0,0,0,0.9)}
+
+/* responsive */
+@media (max-width:780px){
+  .header-wrap{width:96%}
   .h-hero img{height:86px}
-  .slot{width:72px;height:36px}
-  .strip div{height:36px; font-size:16px}
-  .hoop-area{width:300px;height:240px}
+  .slot{width:70px;height:36px}
+  .strip div{height:36px;font-size:16px}
+  .hoop-area{width:300px;height:260px}
 }
 </style>
 </head>
 <body>
   <div class="header-wrap" role="banner">
-    <div class="brand">
+    <div class="brand" aria-hidden="false">
       <div class="crown">👑</div>
-      <div>
-        <div style="font-size:13px;color:var(--muted)">LeBron</div>
-        <div style="font-size:16px;font-weight:900;color:var(--accent)">The King Fan Hub</div>
-      </div>
+      <div class="name">LeBron — The King Fan Hub</div>
     </div>
-
-    <nav class="nav" role="navigation" aria-label="Main navigation">
+    <nav class="nav" role="navigation" aria-label="Main nav">
       <a href="#home" class="nav-link active">Home</a>
       <a href="#bio" class="nav-link">Bio</a>
       <a href="#career" class="nav-link">Career</a>
@@ -186,14 +125,14 @@ body{
   </div>
 
   <main class="container" role="main" aria-live="polite">
-    <!-- Home -->
+    <!-- HOME -->
     <section id="home" class="panel active" aria-labelledby="home-title">
       <div class="h-hero">
-        <img src="images/lebron_2010.png" alt="LeBron portrait" onerror="this.style.opacity=.15">
+        <img src="images/lebron_2010.png" alt="LeBron portrait" onerror="this.style.opacity=.12">
         <div>
-          <div class="title" id="home-title">LeBron James — The King 👑</div>
-          <div class="subtitle">Comprehensive fan hub: verified career stats, animated achievements, gallery, and interactive mini-game — modern sleek style inspired by Lakers purple & gold.</div>
-          <div class="row" style="margin-top:12px">
+          <div id="home-title" class="title">LeBron James — The King 👑</div>
+          <div class="subtitle">Modern sleek fan hub — verified season stats (2003–2024), animated achievements, gallery and an interactive mini-game. Drop your images into <code>/images</code> and the achievement sound into <code>/sounds/achievement.mp3</code>.</div>
+          <div style="margin-top:12px" class="row">
             <div class="card small">Born: December 30, 1984 — Akron, OH</div>
             <div class="card small">Team: Los Angeles Lakers</div>
             <div class="card small">Position: Forward</div>
@@ -202,111 +141,93 @@ body{
       </div>
     </section>
 
-    <!-- Bio -->
+    <!-- BIO -->
     <section id="bio" class="panel" aria-labelledby="bio-title">
       <h2 id="bio-title">📖 Bio</h2>
-      <div style="max-width:920px; color:var(--muted); line-height:1.6;">
-        <p><strong>LeBron Raymone James</strong> (born December 30, 1984) rose from humble beginnings in Akron, Ohio to become one of the most decorated athletes in basketball history. A generational talent from St. Vincent–St. Mary High School, he entered the NBA as the first overall pick and quickly established himself as a superstar — combining size, speed, court vision, and an unparalleled basketball IQ.</p>
-        <p>Over a two-decade career he has redefined versatility: elite scorer, premier playmaker, and leader on & off the court. This timeline highlights seasons, achievements, and historic moments across Cleveland, Miami, and the Lakers era.</p>
+      <div style="max-width:920px;color:var(--muted);line-height:1.6">
+        <p><strong>LeBron Raymone James</strong> rose from Akron, Ohio to become one of basketball's most decorated players. This fan hub chronicles his seasons, achievements, and iconic moments spanning Cleveland, Miami and the Lakers.</p>
+        <p>Use the Career panel for a dramatic per-season slot animation. Click any season tile to roll the stat slot and highlight that year.</p>
       </div>
     </section>
 
-    <!-- Career -->
+    <!-- CAREER -->
     <section id="career" class="panel" aria-labelledby="career-title">
       <h2 id="career-title">📊 Career Stats (2003–2024)</h2>
-
-      <div class="small" style="color:var(--muted);margin-bottom:8px">Tip: watch the numbers roll. Click a card to spotlight a year.</div>
+      <div class="small" style="color:var(--muted)">Click a season card to animate its rolling stats. First few seasons auto-roll on load for drama.</div>
       <div class="grid" id="statsGrid" aria-live="polite"></div>
     </section>
 
-    <!-- Achievements -->
+    <!-- ACHIEVEMENTS -->
     <section id="achievements" class="panel" aria-labelledby="ach-title">
       <h2 id="ach-title">🏆 Achievements</h2>
-      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:flex-start">
-        <div class="achievement-card card" data-ach="champion">
-          <div style="font-size:22px">🏆 4× NBA Champion</div>
-          <div class="small">2012, 2013, 2016, 2020</div>
-        </div>
-        <div class="achievement-card card" data-ach="mvp">
-          <div style="font-size:22px">⭐ 4× NBA MVP</div>
-          <div class="small">2009, 2010, 2012, 2013</div>
-        </div>
-        <div class="achievement-card card" data-ach="allstar">
-          <div style="font-size:22px">🔥 19× NBA All-Star</div>
-          <div class="small">Consistent elite performer</div>
-        </div>
-        <div class="achievement-card card" data-ach="olympic">
-          <div style="font-size:22px">🇺🇸 2× Olympic Gold</div>
-          <div class="small">2008, 2012</div>
-        </div>
-        <div class="achievement-card card" data-ach="finalsmvp">
-          <div style="font-size:22px">🏅 4× Finals MVP</div>
-          <div class="small">Finals dominance</div>
-        </div>
+      <div class="ach-grid" id="achGrid">
+        <div class="achievement-card card" data-ach="champion"><div style="font-size:22px">🏆 4× NBA Champion</div><div class="small">2012, 2013, 2016, 2020</div></div>
+        <div class="achievement-card card" data-ach="mvp"><div style="font-size:22px">⭐ 4× NBA MVP</div><div class="small">2009, 2010, 2012, 2013</div></div>
+        <div class="achievement-card card" data-ach="allstar"><div style="font-size:22px">🔥 19× All-Star</div><div class="small">Career-long excellence</div></div>
+        <div class="achievement-card card" data-ach="olympic"><div style="font-size:22px">🇺🇸 2× Olympic Gold</div><div class="small">2008, 2012</div></div>
+        <div class="achievement-card card" data-ach="finalsmvp"><div style="font-size:22px">🏅 4× Finals MVP</div><div class="small">Finals dominance</div></div>
       </div>
-
-      <!-- hidden audio (local file expected) -->
       <audio id="achievementSound" src="sounds/achievement.mp3" preload="auto"></audio>
     </section>
 
-    <!-- Gallery -->
+    <!-- GALLERY -->
     <section id="gallery" class="panel" aria-labelledby="gallery-title">
-      <h2 id="gallery-title">📸 Gallery — Iconic Moments</h2>
+      <h2 id="gallery-title">📸 Gallery</h2>
       <div class="gallery" id="galleryGrid">
-        <!-- images referenced here must exist in images/ folder -->
-        <img src="images/lebron_2003.png" alt="LeBron 2003" onerror="this.style.opacity=.15">
-        <img src="images/lebron_2010.png" alt="LeBron 2010" onerror="this.style.opacity=.15">
-        <img src="images/cle_logo.png" alt="Cavs logo" onerror="this.style.opacity=.15">
-        <img src="images/mia_logo.png" alt="Heat logo" onerror="this.style.opacity=.15">
-        <img src="images/lal_logo.png" alt="Lakers logo" onerror="this.style.opacity=.15">
+        <img src="images/lebron_2003.png" alt="LeBron 2003" data-full="images/lebron_2003.png" onerror="this.style.opacity=.12">
+        <img src="images/lebron_2010.png" alt="LeBron 2010" data-full="images/lebron_2010.png" onerror="this.style.opacity=.12">
+        <img src="images/cle_logo.png" alt="Cavs logo" data-full="images/cle_logo.png" onerror="this.style.opacity=.12">
+        <img src="images/mia_logo.png" alt="Heat logo" data-full="images/mia_logo.png" onerror="this.style.opacity=.12">
+        <img src="images/lal_logo.png" alt="Lakers logo" data-full="images/lal_logo.png" onerror="this.style.opacity=.12">
       </div>
     </section>
 
-    <!-- Mini-game -->
+    <!-- MINI-GAME -->
     <section id="game" class="panel" aria-labelledby="game-title">
-      <h2 id="game-title">🏀 Mini-Game — Make the Shot</h2>
-      <div class="row">
-        <div class="card small">Drag the ball into the hoop. Score increases and confetti celebrates. Sound plays if enabled.</div>
-      </div>
+      <h2 id="game-title">🏀 Mini-game — Make the Shot</h2>
+      <div class="small">Drag or flick the ball into the hoop. Score increments + confetti + sound.</div>
       <div class="hoop-area" id="hoopArea" role="application" aria-label="mini basketball game">
         <div class="hoop" aria-hidden="true"></div>
         <div class="ball" id="ball" role="button" aria-label="draggable basketball">🏀</div>
         <div class="scoreboard" id="scoreboard">Score: <span id="score">0</span></div>
       </div>
-      <div style="margin-top:6px" class="small">Tap / drag on mobile or click & drag with mouse. Fun physics and celebration included.</div>
     </section>
-
   </main>
 
-  <div class="footer">Built with ❤️ — drop your images into <code>images/</code> and sounds into <code>sounds/</code>.</div>
+  <!-- lightbox for gallery -->
+  <div id="lightbox" role="dialog" aria-modal="true" onclick="closeLightbox()"><img src="" alt="lightbox image"></div>
+  <div class="footer" style="position:fixed;left:50%;transform:translateX(-50%);bottom:8px;color:#cfc7d6;font-size:13px">Built with ❤️ — drop your images into <code>images/</code> and achievement sound into <code>sounds/achievement.mp3</code>.</div>
 
 <script>
-/* -------------------------
-   Navigation control
-   ------------------------- */
+/* ---------------------------
+   Utilities: setActive panel
+   --------------------------- */
 const navLinks = document.querySelectorAll('.nav-link');
 const panels = document.querySelectorAll('.panel');
+
 function setActive(hash){
-  panels.forEach(p=>p.classList.remove('active'));
-  navLinks.forEach(n=>n.classList.remove('active'));
-  const to = document.querySelector(hash);
-  if(to) to.classList.add('active');
+  // hide all
+  panels.forEach(p=>{ p.classList.remove('active'); /* keep display none handled by CSS */ });
+  navLinks.forEach(a=>a.classList.remove('active'));
+  const target = document.querySelector(hash);
+  if(target) target.classList.add('active');
   const nav = document.querySelector('.nav a[href="'+hash+'"]');
   if(nav) nav.classList.add('active');
+  // reset scroll within container for visible panel
+  const container = document.querySelector('.container');
+  container.scrollTop = 0;
 }
 navLinks.forEach(a=>{
   a.addEventListener('click', e=>{
     e.preventDefault();
-    const h = a.getAttribute('href');
-    setActive(h);
-    // reset scroll of container to top of panel
-    document.querySelector('.container').scrollTop = 0;
+    const hash = a.getAttribute('href');
+    setActive(hash);
   });
 });
 
-/* -------------------------
-   Career stats (2003-2024) data
-   ------------------------- */
+/* ---------------------------
+   Career data and slot rendering
+   --------------------------- */
 const seasons = [
   {y:2003,team:'CLE',ppg:20.9,rpg:5.5,apg:5.9},
   {y:2004,team:'CLE',ppg:27.2,rpg:7.4,apg:7.2},
@@ -332,281 +253,213 @@ const seasons = [
   {y:2024,team:'LAL',ppg:27.6,rpg:8.1,apg:7.0}
 ];
 
-/* helper: create slot element with numbers 0..target*10 stepping for decimal precision */
+const statsGrid = document.getElementById('statsGrid');
+const logoMap = { CLE:'images/cle_logo.png', MIA:'images/mia_logo.png', LAL:'images/lal_logo.png' };
+
 function makeSlot(target){
-  const slot = document.createElement('div');
-  slot.className = 'slot';
-  const strip = document.createElement('div');
-  strip.className = 'strip';
-  // create numbers from 0.0 up to target in 0.1 increments for smooth roll
+  const slot = document.createElement('div'); slot.className = 'slot';
+  const strip = document.createElement('div'); strip.className = 'strip';
+  // create list with 0.1 increments up to target + small buffer
   const step = 0.1;
-  const items = [];
-  for(let v = 0.0; v <= target + 2; v = +(v + step).toFixed(1)){
-    const d = document.createElement('div');
-    d.textContent = v.toFixed(1);
-    strip.appendChild(d);
-    items.push(v);
+  for(let v=0.0; v<= target + 3; v = +(v + step).toFixed(1)){
+    const item = document.createElement('div'); item.textContent = v.toFixed(1); strip.appendChild(item);
   }
   slot.appendChild(strip);
-  return {slot,strip,items};
+  return {slot,strip};
 }
 
-/* render season cards and wire rolling animation */
-const statsGrid = document.getElementById('statsGrid');
-seasons.forEach((s, idx) => {
-  const card = document.createElement('div'); card.className='card';
-  // top row with year and team logo (emoji fallback)
+function animateSlot(strip, target){
+  const child = strip.querySelector('div');
+  if(!child) return;
+  const h = child.getBoundingClientRect().height;
+  // find first index >= target
+  let idx = 0;
+  const nodes = Array.from(strip.children);
+  for(let i=0;i<nodes.length;i++){ if(parseFloat(nodes[i].textContent) >= target - 0.0001){ idx = i; break; } }
+  const targetY = - (idx * h);
+  // animate with overshoot/bounce
+  strip.style.transition = 'transform 900ms cubic-bezier(.2,.9,.22,1)';
+  strip.style.transform = `translateY(${targetY}px)`;
+  setTimeout(()=>{ strip.style.transition = 'transform 420ms cubic-bezier(.2,.6,.22,1)'; strip.style.transform = `translateY(${targetY + 8}px)`; }, 920);
+  setTimeout(()=>{ strip.style.transition = 'transform 300ms cubic-bezier(.2,.9,.22,1)'; strip.style.transform = `translateY(${targetY}px)`; }, 1400);
+}
+
+// render season cards
+seasons.forEach((s, idx)=>{
+  const card = document.createElement('div'); card.className = 'card';
   const top = document.createElement('div'); top.style.display='flex'; top.style.justifyContent='space-between'; top.style.alignItems='center';
-  const left = document.createElement('div'); left.innerHTML=`<strong style="font-weight:900">${s.y}</strong><div class="small" style="color:var(--muted)">${s.team}</div>`;
+  const left = document.createElement('div'); left.innerHTML = `<strong style="font-weight:900">${s.y}</strong><div class="small" style="color:var(--muted)">${s.team}</div>`;
   const right = document.createElement('div');
-  // team logo file mapping
-  const logoMap = { CLE: 'images/cle_logo.png', MIA: 'images/mia_logo.png', LAL: 'images/lal_logo.png' };
-  const img = document.createElement('img');
-  img.src = logoMap[s.team] || 'images/cle_logo.png';
-  img.alt = s.team;
-  img.style.height='36px'; img.style.borderRadius='6px';
-  img.onerror = function(){ this.style.opacity = .12; this.style.filter = 'grayscale(.6)'; this.style.boxShadow='none'; this.src=''; right.textContent = s.team; right.style.color='var(--muted)'; };
-  right.appendChild(img);
-  top.appendChild(left); top.appendChild(right);
+  const img = document.createElement('img'); img.src = logoMap[s.team] || ''; img.alt=s.team; img.style.height='36px'; img.style.borderRadius='6px';
+  img.onerror = ()=>{ img.style.opacity=.12; img.style.filter='grayscale(.6)'; };
+  right.appendChild(img); top.appendChild(left); top.appendChild(right);
   card.appendChild(top);
 
-  // stats row: PPG, RPG, APG with slot machines
-  const row = document.createElement('div'); row.style.marginTop='10px'; row.style.display='flex'; row.style.justifyContent='space-between'; row.style.gap='10px';
-  const ppgWrap = document.createElement('div'); ppgWrap.innerHTML = '<div class="small">PPG</div>'; 
-  const ppgSlot = makeSlot(s.ppg); ppgWrap.appendChild(ppgSlot.slot);
-  const rpgWrap = document.createElement('div'); rpgWrap.innerHTML = '<div class="small">RPG</div>';
-  const rpgSlot = makeSlot(s.rpg); rpgWrap.appendChild(rpgSlot.slot);
-  const apgWrap = document.createElement('div'); apgWrap.innerHTML = '<div class="small">APG</div>';
-  const apgSlot = makeSlot(s.apg); apgWrap.appendChild(apgSlot.slot);
-
-  row.appendChild(ppgWrap); row.appendChild(rpgWrap); row.appendChild(apgWrap);
+  const row = document.createElement('div'); row.style.display='flex'; row.style.gap='10px'; row.style.marginTop='12px';
+  const ppg = makeSlot(s.ppg); const rpg = makeSlot(s.rpg); const apg = makeSlot(s.apg);
+  const wrapper = (label, slotObj)=>{ const w = document.createElement('div'); w.innerHTML = `<div class="small">${label}</div>`; w.appendChild(slotObj.slot); return w; };
+  row.appendChild(wrapper('PPG', ppg)); row.appendChild(wrapper('RPG', rpg)); row.appendChild(wrapper('APG', apg));
   card.appendChild(row);
 
-  // click to animate highlight & roll
-  card.addEventListener('click',()=>{
-    animateSlot(ppgSlot.strip, s.ppg);
-    animateSlot(rpgSlot.strip, s.rpg);
-    animateSlot(apgSlot.strip, s.apg);
-    // visual pop
-    card.animate([{transform:'scale(1.0)'},{transform:'scale(1.03) rotate(-1deg)'},{transform:'scale(1.0)'}],{duration:520,easing:'cubic-bezier(.2,.8,.2,1)'});
+  // click to roll this card's slots and flash
+  card.addEventListener('click', ()=>{
+    animateSlot(ppg.strip, s.ppg); animateSlot(rpg.strip, s.rpg); animateSlot(apg.strip, s.apg);
+    card.animate([{transform:'scale(1)'},{transform:'scale(1.03) rotate(-1deg)'},{transform:'scale(1)'}], {duration:520, easing:'cubic-bezier(.2,.8,.2,1)'});
   });
 
   statsGrid.appendChild(card);
 
-  // autoplay a staggered roll on initial load for first few cards for drama
-  setTimeout(()=>{ animateSlot(ppgSlot.strip,s.ppg); animateSlot(rpgSlot.strip,s.rpg); animateSlot(apgSlot.strip,s.apg); }, 300 + idx*70);
+  // auto roll a few with stagger
+  setTimeout(()=>{ animateSlot(ppg.strip, s.ppg); animateSlot(rpg.strip, s.rpg); animateSlot(apg.strip, s.apg); }, 400 + idx * 60);
 });
 
-/* animateSlot: slide strip upward to the proper item (target)
-   strip: DOM element containing many <div> rows each exactly slot height (40px)
-*/
-function animateSlot(strip, target){
-  // each child height
-  const child = strip.querySelector('div');
-  if(!child) return;
-  const h = child.getBoundingClientRect().height;
-  // find index of nearest value equal to target (textContent)
-  let idx = 0;
-  const nodes = Array.from(strip.children);
-  for(let i=0;i<nodes.length;i++){
-    if(parseFloat(nodes[i].textContent) >= target - 0.0001){
-      idx = i;
-      break;
-    }
-  }
-  const targetTranslate = - (idx * h);
-  // add slight overshoot & bounce
-  strip.style.transition = 'transform 900ms cubic-bezier(.2,.9,.22,1)';
-  strip.style.transform = `translateY(${targetTranslate}px)`;
-  // small bounce using keyframes manually scheduled
-  setTimeout(()=>{ strip.style.transition = 'transform 420ms cubic-bezier(.2,.6,.22,1)'; strip.style.transform = `translateY(${targetTranslate + 8}px)`; }, 920);
-  setTimeout(()=>{ strip.style.transition = 'transform 300ms cubic-bezier(.2,.9,.22,1)'; strip.style.transform = `translateY(${targetTranslate}px)`; }, 1400);
-}
-
-/* -------------------------
-   Achievements: sounds & confetti
-   ------------------------- */
+/* ---------------------------
+   Achievements: sound + confetti
+   --------------------------- */
 const achievementSound = document.getElementById('achievementSound');
 document.querySelectorAll('.achievement-card').forEach(card=>{
-  card.addEventListener('click', async () => {
-    // play sound (if available)
-    try{ achievementSound.currentTime = 0; await achievementSound.play(); } catch(e){ /* autoplay restrictions may block until user gesture */ }
-    // confetti burst
+  card.addEventListener('click', async ()=>{
+    // ensure user gesture enabled for audio
+    try{ achievementSound.currentTime = 0; await achievementSound.play(); } catch(e){}
+    pulseCard(card);
     confettiBurst(card);
-    // glow pulse
-    card.animate([{boxShadow:'0 0 0 rgba(242,201,76,0)'},{boxShadow:'0 24px 80px rgba(242,201,76,0.18)'}], {duration:600, direction:'alternate'});
   });
 });
-
+function pulseCard(el){
+  el.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}], {duration:600,easing:'cubic-bezier(.2,.8,.2,1)'});
+}
 function confettiBurst(parent){
   const rect = parent.getBoundingClientRect();
-  for(let i=0;i<36;i++){
-    const c = document.createElement('div');
-    c.className = 'confetti-piece';
-    c.style.left = (Math.random()*rect.width) + 'px';
-    c.style.top = (Math.random()*rect.height) + 'px';
-    c.style.background = (Math.random() > 0.5) ? '#f2c94c' : '#d94800';
-    c.style.opacity = '1';
-    c.style.transform = `translateY(0) rotate(0deg)`;
-    parent.appendChild(c);
-    const vx = (Math.random()*2 - 1) * 120;
-    const vy = -(Math.random()*260 + 60);
-    c.animate([
-      { transform: 'translate(0,0) rotate(0deg)', opacity:1 },
-      { transform: `translate(${vx}px,${vy}px) rotate(${Math.random()*720}deg)`, opacity:0 }
-    ], { duration: 900 + Math.random()*600, easing: 'cubic-bezier(.2,.7,.2,1)' });
-    setTimeout(()=> c.remove(), 1600);
+  for(let i=0;i<40;i++){
+    const el = document.createElement('div'); el.className='confetti-piece';
+    el.style.left = (Math.random()*rect.width) + 'px';
+    el.style.top = (Math.random()*rect.height) + 'px';
+    el.style.background = Math.random()>0.5 ? '#f2c94c' : '#d94800';
+    el.style.opacity = 1;
+    parent.appendChild(el);
+    const vx = (Math.random()*2-1)*140; const vy = -(Math.random()*260 + 80);
+    el.animate([{transform:'translate(0,0) rotate(0deg)', opacity:1},{transform:`translate(${vx}px,${vy}px) rotate(${Math.random()*720}deg)`, opacity:0}], {duration:900+Math.random()*600, easing:'cubic-bezier(.2,.7,.2,1)'});
+    setTimeout(()=>el.remove(), 1500);
   }
 }
 
-/* -------------------------
-   Mini-game: drag, physics-ish release, hoop detection
-   ------------------------- */
+/* ---------------------------
+   Gallery lightbox
+   --------------------------- */
+const lb = document.getElementById('lightbox'); const lbImg = lb.querySelector('img');
+document.getElementById('galleryGrid').addEventListener('click', e=>{
+  const img = e.target.closest('img');
+  if(!img) return;
+  lbImg.src = img.dataset.full || img.src;
+  lb.style.display = 'flex';
+});
+function closeLightbox(){ lb.style.display='none'; lbImg.src=''; }
+lb.addEventListener('click', closeLightbox);
+
+/* ---------------------------
+   Mini-game: pointer-based drag + physics + scoring
+   --------------------------- */
 const ball = document.getElementById('ball');
 const hoop = document.querySelector('.hoop');
 const hoopArea = document.getElementById('hoopArea');
-const scoreboard = document.getElementById('score');
+const scoreEl = document.getElementById('score');
 let score = 0;
-
 let dragging = false;
-let startX=0, startY=0;
-let offsetX=0, offsetY=0;
-let vx = 0, vy = 0;
-let lastTime = 0;
+let startX=0, startY=0, offsetX=0, offsetY=0, vx=0, vy=0, lastTime=0;
 
-function resetBall(){
-  const areaRect = hoopArea.getBoundingClientRect();
-  ball.style.transition = 'left 380ms cubic-bezier(.2,.9,.2,1), top 380ms cubic-bezier(.2,.9,.2,1)';
-  ball.style.left = ((areaRect.width - 48)/2) + 'px';
-  ball.style.top = (areaRect.height - 72) + 'px';
-  setTimeout(()=> { ball.style.transition = ''; }, 420);
+function placeBallCenter(){
+  const r = hoopArea.getBoundingClientRect();
+  ball.style.left = ((r.width - 52)/2) + 'px';
+  ball.style.top = (r.height - 92) + 'px';
 }
+window.addEventListener('load', ()=>{ placeBallCenter(); });
 
-// place ball on load
-window.addEventListener('load', ()=> {
-  resetBall();
-});
-
-// handle pointer events (touch & mouse)
+// pointer events (works touch & mouse)
 ball.addEventListener('pointerdown', e=>{
   e.preventDefault();
   dragging = true;
   ball.setPointerCapture(e.pointerId);
   const rect = ball.getBoundingClientRect();
   startX = e.clientX; startY = e.clientY;
-  offsetX = e.clientX - rect.left;
-  offsetY = e.clientY - rect.top;
-  vx = vy = 0;
-  lastTime = performance.now();
+  offsetX = e.clientX - rect.left; offsetY = e.clientY - rect.top;
+  vx = vy = 0; lastTime = performance.now();
 });
-
 document.addEventListener('pointermove', e=>{
   if(!dragging) return;
   const areaRect = hoopArea.getBoundingClientRect();
-  let x = e.clientX - areaRect.left - offsetX;
-  let y = e.clientY - areaRect.top - offsetY;
-  x = Math.max(0, Math.min(areaRect.width - 48, x));
-  y = Math.max(0, Math.min(areaRect.height - 48, y));
-  // compute simple velocity
-  const now = performance.now();
-  const dt = Math.max(1, now - lastTime);
-  vx = (e.clientX - startX) / dt * 16; // normalized per frame
-  vy = (e.clientY - startY) / dt * 16;
+  let x = e.clientX - areaRect.left - offsetX; let y = e.clientY - areaRect.top - offsetY;
+  x = Math.max(0, Math.min(areaRect.width - 52, x)); y = Math.max(0, Math.min(areaRect.height - 52, y));
+  const now = performance.now(); const dt = Math.max(1, now - lastTime);
+  vx = (e.clientX - startX) / dt * 16; vy = (e.clientY - startY) / dt * 16;
   startX = e.clientX; startY = e.clientY; lastTime = now;
-  ball.style.left = x + 'px';
-  ball.style.top = y + 'px';
+  ball.style.left = x + 'px'; ball.style.top = y + 'px';
 });
-
 document.addEventListener('pointerup', e=>{
   if(!dragging) return;
   dragging = false;
-  // release: simulate physics - apply inertia and gravity for short time
-  simulateThrow(vx*6, vy*6);
+  simulateThrow(vx * 6, vy * 6);
 });
 
+// physics simulation
 function simulateThrow(initVx, initVy){
   const areaRect = hoopArea.getBoundingClientRect();
-  let x = parseFloat(ball.style.left || 0);
-  let y = parseFloat(ball.style.top || 0);
-  let vxx = initVx;
-  let vyy = initVy;
-  const gravity = 0.8; // gravity factor
-  const friction = 0.995;
-  const step = 16;
+  let x = parseFloat(ball.style.left || 0), y = parseFloat(ball.style.top || 0);
+  let vxx = initVx, vyy = initVy;
+  const gravity = 0.8, friction = 0.995, step = 16;
   const sim = setInterval(()=>{
     vyy += gravity * (step/16);
-    x += vxx * (step/16);
-    y += vyy * (step/16);
-    // boundaries
-    if(x < 0){ x=0; vxx = -vxx * 0.6; }
-    if(x > areaRect.width - 48){ x = areaRect.width - 48; vxx = -vxx * 0.6; }
-    if(y > areaRect.height - 48){ y = areaRect.height - 48; vyy = -vyy * 0.6; }
+    x += vxx * (step/16); y += vyy * (step/16);
+    if(x < 0){ x = 0; vxx = -vxx * 0.6; }
+    if(x > areaRect.width - 52){ x = areaRect.width - 52; vxx = -vxx * 0.6; }
+    if(y > areaRect.height - 52){ y = areaRect.height - 52; vyy = -vyy * 0.6; }
     ball.style.left = x + 'px'; ball.style.top = y + 'px';
-    // detect if through hoop (approx): center point crosses hoop rect
-    const ballRect = ball.getBoundingClientRect();
-    const hoopRect = hoop.getBoundingClientRect();
-    const cx = ballRect.left + ballRect.width/2;
-    const cy = ballRect.top + ballRect.height/2;
-    if(cx > hoopRect.left && cx < hoopRect.right && cy > hoopRect.top && cy < hoopRect.bottom + 18){
-      // scored!
-      clearInterval(sim);
-      onScore();
-      return;
+    // check score
+    const ballRect = ball.getBoundingClientRect(); const hoopRect = hoop.getBoundingClientRect();
+    const cx = ballRect.left + ballRect.width/2; const cy = ballRect.top + ballRect.height/2;
+    if(cx > hoopRect.left && cx < hoopRect.right && cy > hoopRect.top && cy < hoopRect.bottom + 20){
+      clearInterval(sim); scored(); return;
     }
-    // stop if velocities small
-    if(Math.abs(vxx) < 0.2 && Math.abs(vyy) < 0.6 && y >= areaRect.height - 48 - 1){
-      clearInterval(sim);
-      resetBall();
-      return;
+    if(Math.abs(vxx) < 0.3 && Math.abs(vyy) < 0.6 && y >= areaRect.height - 52 - 1){
+      clearInterval(sim); placeBallCenter(); return;
     }
     vxx *= friction;
-    // limit x/y to canvas
   }, step);
 }
 
-function onScore(){
-  // celebration
-  score += 1;
-  scoreboard.textContent = score;
-  // confetti across hoop area
+function scored(){
+  score += 1; scoreEl.textContent = score;
+  // confetti celebration from hoop area
   const rect = hoopArea.getBoundingClientRect();
   for(let i=0;i<48;i++){
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = (Math.random()*rect.width) + 'px';
-    el.style.top = (Math.random()*50 + 20) + 'px';
-    el.style.background = (Math.random()>0.5) ? '#f2c94c' : '#d94800';
+    const el = document.createElement('div'); el.className='confetti-piece';
+    el.style.left = (Math.random()*rect.width) + 'px'; el.style.top = (Math.random()*80 + 10) + 'px';
+    el.style.background = Math.random()>0.5 ? '#f2c94c' : '#d94800';
     hoopArea.appendChild(el);
-    const vx = (Math.random()*2-1)*160;
-    const vy = -(Math.random()*260 + 80);
-    el.animate([{ transform: 'translate(0,0) rotate(0deg)', opacity:1 }, { transform: `translate(${vx}px,${vy}px) rotate(${Math.random()*720}deg)`, opacity:0 }], { duration: 900 + Math.random()*600, easing:'cubic-bezier(.2,.7,.2,1)'});
+    const vx = (Math.random()*2-1)*160, vy = -(Math.random()*260+80);
+    el.animate([{transform:'translate(0,0) rotate(0deg)', opacity:1},{transform:`translate(${vx}px,${vy}px) rotate(${Math.random()*720}deg)`, opacity:0}], {duration:900+Math.random()*600, easing:'cubic-bezier(.2,.7,.2,1)'});
     setTimeout(()=>el.remove(), 1700);
   }
-  // optional sound — try to play if allowed
-  if(document.getElementById('achievementSound')){
-    try{ document.getElementById('achievementSound').currentTime = 0; document.getElementById('achievementSound').play(); } catch(e){}
-  }
-  setTimeout(()=> resetBall(), 700);
+  // play achievement sound if available
+  if(achievementSound){ try{ achievementSound.currentTime = 0; achievementSound.play(); } catch(e){} }
+  setTimeout(()=>placeBallCenter(), 700);
 }
 
-/* make panels accessible with keyboard (left/right) */
-document.addEventListener('keydown', (e) => {
+/* ---------------------------
+   Unlock audio early by a user gesture
+   --------------------------- */
+let audioUnlocked = false;
+function unlockAudio(){ if(audioUnlocked) return; audioUnlocked = true; try{ achievementSound.play().then(()=>{ achievementSound.pause(); achievementSound.currentTime = 0; }).catch(()=>{}); }catch(e){} }
+document.addEventListener('pointerdown', unlockAudio, {once:true});
+
+/* ---------------------------
+   Keyboard navigation (left/right)
+   --------------------------- */
+document.addEventListener('keydown', (e)=>{
   const order = ['#home','#bio','#career','#achievements','#gallery','#game'];
   const current = order.findIndex(h => document.querySelector(h).classList.contains('active'));
   if(e.key === 'ArrowRight'){ const next = order[(current+1)%order.length]; setActive(next); }
   if(e.key === 'ArrowLeft'){ const prev = order[(current-1+order.length)%order.length]; setActive(prev); }
 });
-
-/* small UX: click any achievement to animate and play sound on first user gesture unlock */
-let userGestureUnlocked = false;
-function ensureAudioUnlocked(){
-  if(userGestureUnlocked) return;
-  userGestureUnlocked = true;
-  try{ document.getElementById('achievementSound').play().then(()=>{ document.getElementById('achievementSound').pause(); document.getElementById('achievementSound').currentTime=0; }).catch(()=>{}); }catch(e){}
-}
-document.addEventListener('pointerdown', ensureAudioUnlocked, {once:true});
-
-/* end of script */
 </script>
 </body>
 </html>
