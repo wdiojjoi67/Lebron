@@ -1,147 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>LeBron James: The King 👑</title>
 <style>
-body { margin:0; padding:0; font-family:Arial,sans-serif; background:#111; color:#fff; scroll-behavior:smooth; overflow-x:hidden; }
-nav { position:sticky; top:0; background:#222; display:flex; justify-content:center; padding:15px; z-index:100; }
-nav a { color:#fff; margin:0 15px; text-decoration:none; font-weight:bold; font-size:1.1em; }
-nav a:hover { color:#f0c000; }
-section { padding:80px 20px; text-align:center; min-height:100vh; position:relative; }
-h1 { font-size:3em; color:#f0c000; margin-bottom:10px; }
-h2 { font-size:2em; margin-bottom:20px; }
-.emojis { font-size:3em; margin:20px 0; }
-.stats, .achievements, .timeline { display:flex; flex-wrap:wrap; justify-content:center; }
-.stat, .achievement, .card { background:#222; margin:10px; padding:20px; border-radius:15px; width:200px; position:relative; overflow:hidden; transition:transform 0.3s, box-shadow 0.3s; }
-.stat:hover, .achievement:hover, .card:hover { transform:scale(1.08); box-shadow:0 0 25px #f0c000; }
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #0a0a0a;
+  color: #fff;
+  overflow-x: hidden;
+}
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 15px 0;
+  z-index: 1000;
+}
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1em;
+  transition: 0.3s;
+}
+nav a:hover {
+  color: #f0c000;
+}
 
-/* Animations */
-@keyframes bounce { 0%,100%{transform:translateY(0);}50%{transform:translateY(-15px);} }
-@keyframes glow { 0%,100%{text-shadow:0 0 10px #f0c000;}50%{text-shadow:0 0 25px #ffd700;} }
-@keyframes flicker {0%,100%{transform:scale(1);opacity:1;}25%{transform:scale(1.1);opacity:0.8;}50%{transform:scale(0.9);opacity:0.9;}75%{transform:scale(1.05);opacity:0.95;}}
-@keyframes floatUp {0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-40px);opacity:0;}}
-@keyframes slideInLeft {0%{opacity:0; transform:translateX(-50px);}100%{opacity:1; transform:translateX(0);}}
-@keyframes slideInRight {0%{opacity:0; transform:translateX(50px);}100%{opacity:1; transform:translateX(0);}}
+/* Loader */
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  transition: opacity 1s ease;
+}
+#loader.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.ball {
+  font-size: 5em;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
-/* Classes */
-.bounce { display:inline-block; animation:bounce 1s infinite; }
-.glow { display:inline-block; animation:glow 1.5s infinite; }
-.flicker { display:inline-block; animation:flicker 0.8s infinite; }
-.float-star { display:inline-block; animation:floatUp 2s infinite; margin:0 2px; }
-.card-left { animation:slideInLeft 1s forwards; opacity:0; }
-.card-right { animation:slideInRight 1s forwards; opacity:0; }
+/* Pages */
+.page {
+  display: none;
+  padding: 100px 20px;
+  text-align: center;
+  min-height: 100vh;
+  transition: opacity 1s ease, transform 1s ease;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.page.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
 
-/* Background floating balls */
-@keyframes floatBall {0%{transform:translateY(0);}100%{transform:translateY(-200px);}}
-.bg-ball { position:absolute; font-size:50px; opacity:0.08; animation:floatBall 12s infinite linear; }
+h1, h2 {
+  color: #f0c000;
+  text-shadow: 0 0 20px #f0c000;
+}
 
+.card {
+  background: #222;
+  padding: 20px;
+  margin: 15px;
+  border-radius: 15px;
+  display: inline-block;
+  width: 250px;
+  transition: transform 0.4s, box-shadow 0.4s;
+}
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px #f0c000;
+}
+
+/* Scoreboard style numbers */
+.scoreboard {
+  background: #111;
+  border: 2px solid #f0c000;
+  border-radius: 10px;
+  font-family: "Courier New", monospace;
+  font-size: 1.8em;
+  color: #f0c000;
+  padding: 15px;
+  margin: 15px;
+  display: inline-block;
+  animation: flip 1s ease forwards;
+}
+@keyframes flip {
+  0% { transform: rotateX(90deg); opacity: 0; }
+  100% { transform: rotateX(0); opacity: 1; }
+}
 </style>
 </head>
 <body>
 
-<!-- Navigation -->
+<div id="loader"><div class="ball">🏀</div></div>
+
 <nav>
-  <a href="#home">Home</a>
-  <a href="#career">Career</a>
-  <a href="#stats">Stats</a>
-  <a href="#achievements">Achievements</a>
-  <a href="#vitals">Vitals</a>
+  <a href="#" data-target="home">Home</a>
+  <a href="#" data-target="career">Career</a>
+  <a href="#" data-target="stats">Stats</a>
+  <a href="#" data-target="achievements">Achievements</a>
+  <a href="#" data-target="vitals">Vitals</a>
 </nav>
 
-<!-- Home -->
-<section id="home">
-  <h1>LeBron James <span class="glow">👑</span></h1>
-  <div class="emojis">
-    <span class="bounce">🏀</span>
-    <span class="glow">👑</span>
-    <span class="flicker">🔥</span>
-  </div>
-  <p>The King of the Court! Follow LeBron's legendary career, stats, and achievements.</p>
-  <div class="bg-ball" style="left:10%;">🏀</div>
-  <div class="bg-ball" style="left:70%; animation-delay:3s;">🏀</div>
-  <div class="bg-ball" style="left:40%; animation-delay:6s;">🏀</div>
-</section>
+<div id="home" class="page active">
+  <h1>LeBron James 👑</h1>
+  <p>The King of Basketball 🏀🔥</p>
+</div>
 
-<!-- Career -->
-<section id="career">
-  <h2>Career Timeline 📅</h2>
-  <div class="timeline">
+<div id="career" class="page">
+  <h2>Career Timeline</h2>
+  <div class="card"><h3>2003: Cavaliers</h3><p>PPG: 20.9 | RPG: 5.5 | APG: 5.9</p></div>
+  <div class="card"><h3>2010: Heat</h3><p>PPG: 26.7 | RPG: 7.5 | APG: 7.0</p></div>
+  <div class="card"><h3>2014: Cavs Return</h3><p>PPG: 25.3 | RPG: 6.0 | APG: 7.4</p></div>
+  <div class="card"><h3>2018: Lakers</h3><p>PPG: 27.4 | RPG: 8.5 | APG: 8.3</p></div>
+</div>
 
-    <div class="card card-left">
-      <h3>2003: Cleveland Cavaliers 🏀</h3>
-      <p>PPG: 20.9 <span class="bounce">🏀</span></p>
-      <p>RPG: 5.5 🔄</p>
-      <p>APG: 5.9 🎯</p>
-    </div>
+<div id="stats" class="page">
+  <h2>Stats</h2>
+  <div class="scoreboard">Points: 38,000+</div>
+  <div class="scoreboard">Rebounds: 10,500+</div>
+  <div class="scoreboard">Assists: 10,000+</div>
+  <div class="scoreboard">Games: 1,400+</div>
+</div>
 
-    <div class="card card-right">
-      <h3>2010: Miami Heat 🔥</h3>
-      <p>PPG: 26.7 <span class="bounce">🏀</span></p>
-      <p>RPG: 7.5 🔄</p>
-      <p>APG: 7.0 🎯</p>
-    </div>
-
-    <div class="card card-left">
-      <h3>2014: Cleveland Cavaliers 🌆</h3>
-      <p>PPG: 25.3 <span class="bounce">🏀</span></p>
-      <p>RPG: 6.0 🔄</p>
-      <p>APG: 7.4 🎯</p>
-    </div>
-
-    <div class="card card-right">
-      <h3>2018: Los Angeles Lakers 🌴</h3>
-      <p>PPG: 27.4 <span class="bounce">🏀</span></p>
-      <p>RPG: 8.5 🔄</p>
-      <p>APG: 8.3 🎯</p>
-    </div>
-
-  </div>
-</section>
-
-<!-- Stats -->
-<section id="stats">
-  <h2>Stats 📊</h2>
-  <div class="stats">
-    <div class="stat">Points: 38,000+ <span class="bounce">🏀</span></div>
-    <div class="stat">Rebounds: 10,500+ 🔄</div>
-    <div class="stat">Assists: 10,000+ 🎯</div>
-    <div class="stat">Games: 1,400+ 🏟️</div>
-  </div>
-</section>
-
-<!-- Achievements -->
-<section id="achievements">
+<div id="achievements" class="page">
   <h2>Achievements 🏆</h2>
-  <div class="achievements">
-    <div class="achievement">4× NBA Champion 🏀🏆 <span class="float-star">🌟</span></div>
-    <div class="achievement">4× MVP 🥇 <span class="float-star">🌟</span></div>
-    <div class="achievement">19× All-Star 🌟 <span class="float-star">🌟</span></div>
-    <div class="achievement">2× Olympic Gold Medalist 🥇🇺🇸 <span class="float-star">🌟</span></div>
-  </div>
-</section>
+  <div class="card">4× NBA Champion</div>
+  <div class="card">4× MVP</div>
+  <div class="card">19× All-Star</div>
+  <div class="card">2× Olympic Gold Medalist</div>
+</div>
 
-<!-- Vitals -->
-<section id="vitals">
-  <h2>Vitals 🧬</h2>
-  <ul style="list-style:none; padding:0; font-size:1.2em;">
-    <li>Height: 6'9" 📏</li>
-    <li>Weight: 250 lbs ⚖️</li>
-    <li>Position: Forward 🔥</li>
-    <li>Born: December 30, 1984 🎂</li>
-    <li>Hometown: Akron, Ohio 🏡</li>
-  </ul>
-  <div class="emojis">
-    <span class="bounce">🏀</span>
-    <span class="glow">👑</span>
-    <span class="flicker">🔥</span>
-  </div>
-</section>
+<div id="vitals" class="page">
+  <h2>Vitals</h2>
+  <p>Height: 6'9" 📏</p>
+  <p>Weight: 250 lbs ⚖️</p>
+  <p>Position: Forward 🔥</p>
+  <p>Born: December 30, 1984 🎂</p>
+  <p>Hometown: Akron, Ohio 🏡</p>
+</div>
 
-<footer>
-  <p>© 2025 LeBron James Fan Page 👑 | Built with ❤️ and animated emojis 🏀</p>
-</footer>
+<script>
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+  setTimeout(() => {
+    loader.classList.add("hidden");
+  }, 1200); // Loader hides after 1.2s
+});
+
+const navLinks = document.querySelectorAll("nav a");
+const pages = document.querySelectorAll(".page");
+
+navLinks.forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    const target = link.getAttribute("data-target");
+    pages.forEach(p => p.classList.remove("active"));
+    document.getElementById(target).classList.add("active");
+    window.scrollTo(0, 0);
+  });
+});
+</script>
 
 </body>
 </html>
