@@ -14,13 +14,32 @@ body{background:var(--bg);color:#fff;overflow-x:hidden;}
 header{position:fixed;top:0;left:0;width:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;gap:10px;padding:10px;z-index:1000;}
 header a{color:#ddd;text-decoration:none;padding:8px 12px;border-radius:8px;}
 header a.active, header a:hover{color:var(--accent);}
-section{min-height:100vh;padding:120px 20px 60px 20px;display:flex;flex-direction:column;align-items:center;gap:20px;opacity:0;transform:translateY(40px);transition:all 0.7s ease;}
-section.active{opacity:1;transform:translateY(0);}
+section{
+  min-height:100vh;
+  padding:120px 20px 60px 20px;
+  display:none;  /* hide all sections by default */
+  flex-direction:column;
+  align-items:center;
+  gap:20px;
+  opacity:0;
+  transform:translateY(40px);
+  transition:all 0.7s ease;
+}
+section.active{
+  display:flex;  /* show active section */
+  opacity:1;
+  transform:translateY(0);
+}
 h1,h2{color:var(--accent);}
 .card{background:rgba(255,255,255,0.05);padding:15px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);min-width:220px;box-shadow:0 12px 36px rgba(0,0,0,0.5);}
 .stats-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:1000px;}
 .flip{display:inline-block;min-width:48px;text-align:right;font-family:monospace;font-weight:bold;}
 .achievement-sound{display:none;}
+.hoop-area{position:relative;width:360px;height:260px;margin:20px auto;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:flex-end;justify-content:center;}
+.hoop{position:absolute;top:28px;width:120px;height:14px;border-radius:8px;background:var(--accent);left:50%;transform:translateX(-50%);box-shadow:0 6px 22px rgba(242,201,76,0.12);}
+.ball{position:absolute;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);bottom:18px;left:50%;transform:translateX(-50%);cursor:grab;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;opacity:0;}
+footer{text-align:center;margin-top:30px;padding-bottom:30px;color:#cfc7d6;}
 </style>
 </head>
 <body>
@@ -63,13 +82,13 @@ h1,h2{color:var(--accent);}
 <section id="game">
 <h2>🏀 Mini-Game</h2>
 <p>Drag the basketball into the hoop to celebrate with confetti!</p>
-<div style="position:relative;width:360px;height:260px;margin:20px auto;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:flex-end;justify-content:center;" id="hoopArea">
-  <div style="position:absolute;top:28px;width:120px;height:14px;border-radius:8px;background:var(--accent);left:50%;transform:translateX(-50%);box-shadow:0 6px 22px rgba(242,201,76,0.12);" class="hoop"></div>
-  <div style="position:absolute;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);bottom:18px;left:50%;transform:translateX(-50%);cursor:grab;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;" id="ball">🏀</div>
+<div class="hoop-area" id="hoopArea">
+  <div class="hoop"></div>
+  <div class="ball" id="ball">🏀</div>
 </div>
 </section>
 
-<footer style="text-align:center;margin-top:30px;padding-bottom:30px;color:#cfc7d6;">Built with ❤️ for LeBron fans</footer>
+<footer>Built with ❤️ for LeBron fans</footer>
 
 <script>
 // Navigation
@@ -87,28 +106,17 @@ links.forEach(l=>l.addEventListener('click',e=>{
 
 // Career Stats
 const seasons=[
-{y:2003,team:'CLE',ppg:20.9,rpg:5.5,apg:5.9},
-{y:2004,team:'CLE',ppg:27.2,rpg:7.4,apg:7.2},
-{y:2005,team:'CLE',ppg:31.4,rpg:7.0,apg:6.6},
-{y:2006,team:'CLE',ppg:31.4,rpg:7.0,apg:6.6},
-{y:2007,team:'CLE',ppg:27.3,rpg:6.7,apg:6.0},
-{y:2008,team:'CLE',ppg:30.0,rpg:7.9,apg:7.2},
-{y:2009,team:'CLE',ppg:28.4,rpg:7.6,apg:7.2},
-{y:2010,team:'CLE',ppg:29.7,rpg:7.3,apg:8.6},
-{y:2011,team:'MIA',ppg:26.7,rpg:7.5,apg:7.0},
-{y:2012,team:'MIA',ppg:27.1,rpg:7.9,apg:6.2},
-{y:2013,team:'MIA',ppg:26.8,rpg:8.0,apg:7.3},
-{y:2014,team:'MIA',ppg:27.1,rpg:6.9,apg:6.3},
-{y:2015,team:'CLE',ppg:25.3,rpg:7.4,apg:6.8},
-{y:2016,team:'CLE',ppg:26.4,rpg:8.6,apg:8.7},
-{y:2017,team:'CLE',ppg:26.4,rpg:8.6,apg:8.7},
-{y:2018,team:'LAL',ppg:27.4,rpg:8.5,apg:8.3},
-{y:2019,team:'LAL',ppg:25.3,rpg:7.8,apg:10.2},
-{y:2020,team:'LAL',ppg:25.3,rpg:7.8,apg:10.2},
-{y:2021,team:'LAL',ppg:25.0,rpg:7.7,apg:7.8},
-{y:2022,team:'LAL',ppg:30.3,rpg:8.2,apg:6.2},
-{y:2023,team:'LAL',ppg:28.9,rpg:8.1,apg:6.5},
-{y:2024,team:'LAL',ppg:27.6,rpg:8.1,apg:7.0}
+{y:2003,team:'CLE',ppg:20.9,rpg:5.5,apg:5.9},{y:2004,team:'CLE',ppg:27.2,rpg:7.4,apg:7.2},
+{y:2005,team:'CLE',ppg:31.4,rpg:7.0,apg:6.6},{y:2006,team:'CLE',ppg:31.4,rpg:7.0,apg:6.6},
+{y:2007,team:'CLE',ppg:27.3,rpg:6.7,apg:6.0},{y:2008,team:'CLE',ppg:30.0,rpg:7.9,apg:7.2},
+{y:2009,team:'CLE',ppg:28.4,rpg:7.6,apg:7.2},{y:2010,team:'CLE',ppg:29.7,rpg:7.3,apg:8.6},
+{y:2011,team:'MIA',ppg:26.7,rpg:7.5,apg:7.0},{y:2012,team:'MIA',ppg:27.1,rpg:7.9,apg:6.2},
+{y:2013,team:'MIA',ppg:26.8,rpg:8.0,apg:7.3},{y:2014,team:'MIA',ppg:27.1,rpg:6.9,apg:6.3},
+{y:2015,team:'CLE',ppg:25.3,rpg:7.4,apg:6.8},{y:2016,team:'CLE',ppg:26.4,rpg:8.6,apg:8.7},
+{y:2017,team:'CLE',ppg:26.4,rpg:8.6,apg:8.7},{y:2018,team:'LAL',ppg:27.4,rpg:8.5,apg:8.3},
+{y:2019,team:'LAL',ppg:25.3,rpg:7.8,apg:10.2},{y:2020,team:'LAL',ppg:25.3,rpg:7.8,apg:10.2},
+{y:2021,team:'LAL',ppg:25.0,rpg:7.7,apg:7.8},{y:2022,team:'LAL',ppg:30.3,rpg:8.2,apg:6.2},
+{y:2023,team:'LAL',ppg:28.9,rpg:8.1,apg:6.5},{y:2024,team:'LAL',ppg:27.6,rpg:8.1,apg:7.0}
 ];
 const grid=document.getElementById('statsGrid');
 seasons.forEach(s=>{
@@ -136,7 +144,7 @@ document.querySelectorAll('.achievement').forEach(a=>{
   a.addEventListener('mouseenter',()=>{achievementSound.currentTime=0;achievementSound.play();});
 });
 
-// Mini-game (drag hoop)
+// Mini-game
 const ball=document.getElementById('ball');
 const hoopArea=document.getElementById('hoopArea');
 let dragging=false,shiftX=0,shiftY=0;
