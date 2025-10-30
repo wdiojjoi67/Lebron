@@ -1,241 +1,226 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>LeBron James — Ultimate Fan Hub</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LeBron — The King Experience (Lakers Theme)</title>
 <style>
 :root{
-  --bg:#060416; --accent:#f2c94c; --accent-deep:#c8942a; --muted:#bfb8c6;
+  --bg:#060216;
+  --panel:rgba(9,6,20,0.6);
+  --gold:#f2c94c;
+  --gold-deep:#c8942a;
+  --purple:#3b0f5a;
+  --muted:#cfc3d4;
+  --glass: rgba(255,255,255,0.03);
 }
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:#fff; -webkit-font-smoothing:antialiased}
 body{
-  margin:0; font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial; color:#fff;
-  background: linear-gradient(180deg,#050313,#060216); -webkit-font-smoothing:antialiased;
+  background: radial-gradient(800px 400px at 10% 10%, rgba(59,15,90,0.08), transparent 12%),
+              radial-gradient(700px 350px at 90% 90%, rgba(242,201,76,0.03), transparent 12%),
+              linear-gradient(180deg,var(--bg),#04030b);
   overflow:hidden;
 }
 
 /* Header */
 .header{
-  position:fixed; left:50%; top:12px; transform:translateX(-50%);
-  z-index:1200; width:min(1150px,96%); padding:10px 14px; display:flex; justify-content:space-between; align-items:center;
-  border-radius:999px; background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
-  border:1px solid rgba(255,255,255,0.03);
+  position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:1400;
+  width:min(1180px,96%);display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.008)); border:1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
-.brand { display:flex; gap:12px; align-items:center; }
-.brand .logo { font-size:20px }
-.brand .title { font-weight:900; color:var(--accent) }
-.header .nav { display:flex; gap:8px }
-.header .nav button { background:transparent; border:0; color:var(--muted); padding:8px 10px; border-radius:8px; font-weight:800; cursor:pointer }
-.header .nav button.active, .header .nav button:hover { color:#1b0632; background:linear-gradient(90deg,var(--accent),var(--accent-deep)); transform:translateY(-2px); }
+.brand{display:flex;align-items:center;gap:12px}
+.brand .crown{font-size:22px}
+.brand .title{font-weight:900;color:var(--gold)}
+.nav{display:flex;gap:8px}
+.nav button{background:transparent;border:0;color:var(--muted);padding:8px 10px;border-radius:10px;font-weight:800;cursor:pointer;transition:all .25s}
+.nav button.active, .nav button:hover{color:#15031b;background:linear-gradient(90deg,var(--gold),var(--gold-deep));transform:translateY(-3px);box-shadow:0 12px 36px rgba(242,201,76,0.12)}
+.controls-top{display:flex;gap:8px;align-items:center}
 
-/* Container */
+/* container */
 .container{
-  position:fixed; top:72px; left:50%; transform:translateX(-50%); width:min(1150px,96%);
-  bottom:18px; border-radius:18px; padding:12px; overflow:hidden;
-  background: linear-gradient(180deg, rgba(255,255,255,0.008), rgba(255,255,255,0.004));
-  box-shadow:0 30px 80px rgba(0,0,0,0.6);
+  position:fixed;left:50%;top:72px;transform:translateX(-50%);width:min(1180px,96%);bottom:18px;border-radius:18px;padding:12px;overflow:hidden;
+  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); box-shadow:0 40px 120px rgba(0,0,0,0.7);
 }
 
-/* Panels (we'll toggle .panel-active) */
-.panel { position:absolute; inset:12px; border-radius:12px; padding:22px; overflow:auto; display:none; opacity:0; transform:translateX(20px) scale(.99); transition:all 420ms cubic-bezier(.2,.9,.22,1) }
-.panel.panel-active { display:block; opacity:1; transform:translateX(0) scale(1) }
+/* particle canvas behind panels */
+#particles{position:absolute;inset:0;z-index:2;pointer-events:none}
 
-/* Layout pieces */
-.h-hero { display:flex; gap:18px; align-items:center }
-.h-hero img { width:160px; height:160px; object-fit:cover; border-radius:12px; box-shadow:0 24px 80px rgba(0,0,0,0.6) }
-.hero-title { font-size:22px; color:var(--accent); font-weight:900 }
-.hero-sub { color:var(--muted); line-height:1.5; max-width:820px }
+/* panels - use translate/fade transitions */
+.panel{position:absolute;inset:12px;border-radius:14px;padding:22px;overflow:auto;background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.26));backdrop-filter: blur(6px); opacity:0; transform:translateY(30px) scale(.995); transition:all 520ms cubic-bezier(.2,.9,.22,1); z-index:10; display:none}
+.panel.panel-active{opacity:1;transform:translateY(0) scale(1); display:block}
 
-/* Slideshow */
-.slideshow { position:relative; height:100%; border-radius:12px; overflow:hidden; background:linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.14)) }
-.slide { position:absolute; inset:0; display:flex; gap:18px; align-items:center; padding:24px; transition:all 560ms cubic-bezier(.2,.9,.22,1); opacity:0; transform:translateX(30px) scale(.995); pointer-events:none }
-.slide.active { opacity:1; transform:translateX(0) scale(1); pointer-events:auto }
-.slide .left { flex:1; display:flex; align-items:center; justify-content:center }
-.slide .right { flex:1; display:flex; flex-direction:column; gap:12px; align-items:flex-start }
-.hero-image { width:420px; height:420px; object-fit:cover; border-radius:12px; box-shadow:0 30px 80px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.04) }
+/* hero / bio */
+.h-hero{display:flex;gap:18px;align-items:center}
+.h-hero img{width:160px;height:160px;object-fit:cover;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.04)}
+.hero-title{font-size:22px;color:var(--gold);font-weight:900}
+.hero-sub{color:var(--muted);line-height:1.55;max-width:820px}
 
-/* scoreboard */
-.scoreboard-row { display:flex; gap:12px; margin-top:12px }
-.card { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px; border-radius:10px; min-width:140px; border:1px solid rgba(255,255,255,0.03); box-shadow:0 12px 40px rgba(0,0,0,0.55) }
-.label { font-size:12px; color:var(--muted) }
-.value { font-weight:900; font-family:monospace; font-size:22px }
+/* slideshow */
+.slideshow{position:relative;height:76vh;border-radius:12px;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;gap:24px;align-items:center;padding:34px;opacity:0;transform:translateX(40px) scale(.995);transition:all 600ms cubic-bezier(.2,.9,.22,1)}
+.slide.active{opacity:1;transform:translateX(0) scale(1)}
+.left{flex:1;display:flex;align-items:center;justify-content:center}
+.right{flex:1;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.hero-image{width:520px;height:520px;object-fit:cover;border-radius:18px;box-shadow:0 40px 120px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.04)}
+
+/* scoreboard look */
+.scoreboard-row{display:flex;gap:14px;margin-top:12px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);min-width:150px;box-shadow:0 18px 60px rgba(0,0,0,0.65)}
+.label{font-size:12px;color:var(--muted)}
+.value{font-weight:900;font-family:monospace;font-size:26px}
 
 /* slots */
-.slot { width:110px; height:44px; overflow:hidden; border-radius:8px; padding:6px; background:rgba(0,0,0,0.12); border:1px solid rgba(255,255,255,0.03) }
-.strip { position:relative; top:0; transition:transform 900ms cubic-bezier(.2,.9,.22,1) }
-.strip div { height:44px; display:flex; align-items:center; justify-content:flex-end; padding-right:8px; font-weight:900; font-family:monospace }
+.slot{width:120px;height:48px;overflow:hidden;border-radius:10px;padding:6px;background:rgba(0,0,0,0.12);border:1px solid rgba(255,255,255,0.03)}
+.strip{position:relative;top:0;transition:transform 900ms cubic-bezier(.2,.9,.22,1)}
+.strip div{height:48px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-weight:900;font-family:monospace;font-size:18px;color:#fff}
 
-/* controls */
-.controls { position:absolute; left:18px; bottom:18px; display:flex; gap:8px; align-items:center }
-.btn { background:linear-gradient(90deg,var(--accent),var(--accent-deep)); padding:8px 12px; border-radius:8px; border:0; color:#1b0632; font-weight:900; cursor:pointer }
-.arrows { position:absolute; right:18px; bottom:18px; display:flex; gap:8px }
-.arrow { background:rgba(255,255,255,0.04); padding:8px; border-radius:8px; cursor:pointer }
-.dots { position:absolute; left:50%; transform:translateX(-50%); bottom:18px; display:flex; gap:8px }
-.dot { width:10px; height:10px; border-radius:999px; background:rgba(255,255,255,0.06); cursor:pointer }
-.dot.active { background:linear-gradient(90deg,var(--accent),var(--accent-deep)); box-shadow:0 8px 24px rgba(242,201,76,0.12) }
+/* controls bottom */
+.controls{position:absolute;left:18px;bottom:18px;display:flex;gap:8px;align-items:center;z-index:120}
+.btn{background:linear-gradient(90deg,var(--gold),var(--gold-deep));padding:8px 12px;border-radius:8px;border:0;color:#15031b;font-weight:900;cursor:pointer}
+.arrows{position:absolute;right:18px;bottom:18px;display:flex;gap:8px}
+.arrow{background:rgba(255,255,255,0.04);padding:10px;border-radius:10px;cursor:pointer}
+.dots{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;display:flex;gap:8px}
+.dot{width:12px;height:12px;border-radius:999px;background:rgba(255,255,255,0.06);cursor:pointer}
+.dot.active{background:linear-gradient(90deg,var(--gold),var(--gold-deep));box-shadow:0 8px 24px rgba(242,201,76,0.12)}
 
-/* Achievements */
-.ach-grid { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px }
-.ach-card { padding:12px; border-radius:10px; background:linear-gradient(180deg,#241033,#1b1236); cursor:pointer; min-width:160px; transition:transform .28s }
+/* achievements */
+.ach-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.ach-card{padding:14px;border-radius:10px;background:linear-gradient(180deg,#2a1133,#15071a);cursor:pointer;min-width:200px;transition:transform .28s}
 
 /* gallery */
-.gallery { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px }
-.gallery img { height:110px; border-radius:8px; object-fit:cover; cursor:pointer; box-shadow:0 12px 40px rgba(0,0,0,0.6) }
+.gallery{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.gallery img{height:120px;border-radius:10px;object-fit:cover;cursor:pointer;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
 
-/* mini-game */
-.hoop-area { width:420px; height:320px; border-radius:12px; background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent); position:relative; border:1px solid rgba(255,255,255,0.02) }
-.hoop { position:absolute; top:44px; left:50%; transform:translateX(-50%); width:160px; height:18px; border-radius:10px; background:linear-gradient(90deg,var(--accent),var(--accent-deep)) }
-.ball { position:absolute; width:56px; height:56px; border-radius:999px; background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800); display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 20px 60px rgba(0,0,0,0.6); cursor:grab }
+/* minigame */
+.hoop-area{width:480px;height:360px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);position:relative;border:1px solid rgba(255,255,255,0.02)}
+.hoop{position:absolute;top:48px;left:50%;transform:translateX(-50%);width:200px;height:18px;border-radius:12px;background:linear-gradient(90deg,var(--gold),var(--gold-deep))}
+.ball{position:absolute;width:64px;height:64px;border-radius:999px;background:radial-gradient(circle at 30% 30%,#ff8a00,#d94800);display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 30px 80px rgba(0,0,0,0.6);cursor:grab}
+.score{position:absolute;right:18px;top:18px;background:rgba(0,0,0,0.35);padding:8px;border-radius:8px;font-weight:900;color:var(--gold)}
 
 /* footer */
-.footer { position:fixed; left:50%; transform:translateX(-50%); bottom:6px; color:#cfc7d6; font-size:13px }
+.footer{position:fixed;left:50%;transform:translateX(-50%);bottom:8px;color:#d7cddf;font-size:13px;z-index:1400}
 
 /* lightbox */
-#lightbox { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.9); z-index:1500 }
-#lightbox img { max-width:92%; max-height:86%; border-radius:8px }
+#lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.92);z-index:2000}
+#lightbox img{max-width:92%;max-height:86%;border-radius:8px}
 
 /* responsive */
-@media (max-width:920px) {
-  .slide { flex-direction:column; align-items:center }
-  .hero-image { width:260px; height:260px }
-  .slot { width:90px }
+@media (max-width:980px){
+  .hero-image{width:320px;height:320px}
+  .slide{padding:16px}
+  .slot{width:96px;height:40px}
+  .card{min-width:120px}
 }
 </style>
 </head>
 <body>
 
-  <div class="header" role="banner">
-    <div class="brand"><div class="logo">👑</div><div class="title">LeBron — The King Fan Hub</div></div>
-    <div class="nav" role="navigation" aria-label="main">
-      <button id="btnHome" class="active">Home</button>
-      <button id="btnSlideshow">Career</button>
-      <button id="btnAchievements">Achievements</button>
-      <button id="btnGallery">Gallery</button>
-      <button id="btnGame">Mini-Game</button>
+<!-- particle canvas behind everything -->
+<canvas id="particles"></canvas>
+
+<div class="header" role="banner">
+  <div class="brand"><div class="crown">👑</div><div class="title">LeBron — The King Experience</div></div>
+  <div class="controls-top">
+    <div class="nav" role="navigation">
+      <button id="navHome">Home</button>
+      <button id="navCareer" class="active">Career</button>
+      <button id="navAchievements">Achievements</button>
+      <button id="navGallery">Gallery</button>
+      <button id="navGame">Mini-Game</button>
     </div>
+    <button id="musicToggle" class="btn" title="Toggle music">Mute</button>
   </div>
+</div>
 
-  <div class="container" role="main">
-
-    <!-- HOME / BIO -->
-    <section id="homePanel" class="panel panel-active" aria-labelledby="homeTitle">
-      <div class="h-hero">
-        <img src="images/lebron_2018.png" alt="LeBron portrait" onerror="this.style.opacity=.12">
-        <div>
-          <div id="homeTitle" class="hero-title">LeBron Raymone James — The King 👑</div>
-          <div class="hero-sub">
-            Born December 30, 1984 in Akron, Ohio. Entered the NBA as the 1st overall pick and has become one of the most accomplished basketball players
-            in history — MVP, champion, Olympic gold medalist, and scoring leader across multiple eras. This fan hub shows year-by-year verified stats,
-            achievements, gallery images, and a mini-game. Use the Career tab for the full animated slideshow of seasons (2003–2024).
-          </div>
-          <div style="margin-top:12px; display:flex; gap:12px">
-            <div class="card">Height: 6'9" • Weight: 250 lb</div>
-            <div class="card">Draft: 2003 (1st overall)</div>
-            <div class="card">Positions: Forward</div>
-          </div>
+<div class="container" role="main">
+  <!-- HOME / BIO -->
+  <section id="panelHome" class="panel">
+    <div class="h-hero">
+      <img src="images/lebron_2018.png" alt="LeBron portrait" onerror="this.style.opacity=.12">
+      <div>
+        <div class="hero-title">LeBron Raymone James — The King 👑</div>
+        <div class="hero-sub" id="bioText">
+          LeBron James (born December 30, 1984) rose from Akron, Ohio to become a generational talent. 2003 NBA Rookie of the Year, multiple MVPs, Finals MVPs,
+          four-time champion, two-time Olympic gold medalist, and one of the greatest all-around players in the history of basketball. This fan experience
+          walks year-by-year through his seasons, achievements, and includes interactive mini-games and gallery moments.
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- SLIDESHOW / CAREER -->
-    <section id="slidePanel" class="panel" aria-labelledby="careerTitle">
-      <h2 id="careerTitle" style="color:var(--accent)">Career Slideshow (2003–2024)</h2>
-      <div style="color:var(--muted); margin-bottom:8px">Autoplay enabled — hover to pause. Swipe left/right on touch devices. Click a slide to roll that year's stats.</div>
+  <!-- CAREER SLIDESHOW -->
+  <section id="panelCareer" class="panel panel-active">
+    <h2 style="color:var(--gold);margin:0 0 8px 0">Career Slideshow — Seasons (2003–2024)</h2>
+    <div style="color:var(--muted);margin-bottom:8px">Autoplay is on. Hover to pause. Swipe left/right to change slides. Click slide to roll that year's stats.</div>
+    <div id="slideshow" class="slideshow"></div>
 
-      <div class="slideshow" id="slideshow"></div>
+    <div class="controls">
+      <button id="playPause" class="btn">Pause</button>
+      <button id="autoplayBtn" class="btn" style="background:linear-gradient(90deg,#fff4b8,var(--gold))">Autoplay</button>
+    </div>
+    <div class="arrows">
+      <div id="prev" class="arrow">◀</div>
+      <div id="next" class="arrow">▶</div>
+    </div>
+    <div class="dots" id="dots"></div>
+  </section>
 
-      <div class="controls">
-        <button id="playPause" class="btn">Pause</button>
-        <button id="autoplayToggle" class="btn" style="background:linear-gradient(90deg,#fff4b8,#f2c94c)">Autoplay</button>
+  <!-- ACHIEVEMENTS -->
+  <section id="panelAchievements" class="panel">
+    <h2 style="color:var(--gold)">Achievements</h2>
+    <div style="color:var(--muted);margin-bottom:8px">Click any tile to celebrate — sound will play (if allowed) and confetti will burst.</div>
+    <div class="ach-grid">
+      <div class="ach-card" data-ach="champ">🏆 4× NBA Champion — 2012, 2013, 2016, 2020</div>
+      <div class="ach-card" data-ach="mvp">⭐ 4× NBA MVP — 2009, 2010, 2012, 2013</div>
+      <div class="ach-card" data-ach="allstar">🔥 19× NBA All-Star</div>
+      <div class="ach-card" data-ach="olympic">🇺🇸 2× Olympic Gold — 2008, 2012</div>
+      <div class="ach-card" data-ach="finals">🏅 4× Finals MVP</div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="panelGallery" class="panel">
+    <h2 style="color:var(--gold)">Gallery</h2>
+    <div style="color:var(--muted);margin-bottom:8px">Tap images to expand.</div>
+    <div class="gallery" id="galleryGrid">
+      <img src="images/lebron_2003.png" alt="2003" data-full="images/lebron_2003.png">
+      <img src="images/lebron_2010.png" alt="2010" data-full="images/lebron_2010.png">
+      <img src="images/lebron_2014.png" alt="2014" data-full="images/lebron_2014.png">
+      <img src="images/lebron_2018.png" alt="2018" data-full="images/lebron_2018.png">
+    </div>
+  </section>
+
+  <!-- MINI-GAME -->
+  <section id="panelGame" class="panel">
+    <h2 style="color:var(--gold)">Mini-Game — Make the Shot</h2>
+    <div style="color:var(--muted);margin-bottom:8px">Drag the ball into the hoop. Score increases and triggers celebration.</div>
+    <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap">
+      <div class="hoop-area" id="hoopArea">
+        <div class="hoop"></div>
+        <div class="ball" id="gameBall">🏀</div>
+        <div class="score" id="gameScore">Score: <span id="scoreVal">0</span></div>
       </div>
-      <div class="arrows"><div id="prev" class="arrow">◀</div><div id="next" class="arrow">▶</div></div>
-      <div class="dots" id="dots"></div>
-    </section>
-
-    <!-- ACHIEVEMENTS -->
-    <section id="achPanel" class="panel" aria-labelledby="achTitle">
-      <h2 id="achTitle" style="color:var(--accent)">Achievements</h2>
-      <div style="color:var(--muted); margin-bottom:8px">Click an achievement to celebrate — sound plays if allowed.</div>
-      <div class="ach-grid" id="achGrid">
-        <div class="ach-card" data-ach="champions">🏆 4× NBA Champion — 2012, 2013, 2016, 2020</div>
-        <div class="ach-card" data-ach="mvp">⭐ 4× NBA MVP — 2009, 2010, 2012, 2013</div>
-        <div class="ach-card" data-ach="allstar">🔥 19× NBA All-Star</div>
-        <div class="ach-card" data-ach="olympic">🇺🇸 2× Olympic Gold — 2008, 2012</div>
-        <div class="ach-card" data-ach="finalsMVP">🏅 4× NBA Finals MVP</div>
+      <div style="max-width:460px;color:var(--muted)">
+        <p><strong>Controls:</strong> Click or touch and drag the ball. Flick it into the hoop. The physics are playful — try different release speeds.</p>
+        <p>Scoring triggers confetti and sound. Sound can be toggled with the Mute button in the header.</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- GALLERY -->
-    <section id="galleryPanel" class="panel" aria-labelledby="galTitle">
-      <h2 id="galTitle" style="color:var(--accent)">Gallery</h2>
-      <div class="gallery" id="galleryGrid">
-        <img src="images/lebron_2003.png" alt="2003" data-full="images/lebron_2003.png" />
-        <img src="images/lebron_2010.png" alt="2010" data-full="images/lebron_2010.png" />
-        <img src="images/lebron_2014.png" alt="2014" data-full="images/lebron_2014.png" />
-        <img src="images/lebron_2018.png" alt="2018" data-full="images/lebron_2018.png" />
-      </div>
-    </section>
+</div>
 
-    <!-- MINI-GAME -->
-    <section id="gamePanel" class="panel" aria-labelledby="gameTitle">
-      <h2 id="gameTitle" style="color:var(--accent)">Mini-Game — Make the Shot</h2>
-      <div style="color:var(--muted); margin-bottom:8px">Drag the ball into the hoop. Score increases and celebrates with confetti & sound.</div>
-      <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap">
-        <div class="hoop-area" id="hoopArea">
-          <div class="hoop" aria-hidden="true"></div>
-          <div class="ball" id="ball">🏀</div>
-          <div class="score" id="score">Score: <span id="scoreVal">0</span></div>
-        </div>
-        <div style="max-width:440px; color:var(--muted)"><strong>Controls:</strong> drag or flick the ball with your finger or mouse. Aim for the hoop. Every basket triggers a celebration and plays the achievement sound.</div>
-      </div>
-    </section>
+<div id="lightbox" onclick="this.style.display='none'"><img src="" alt=""></div>
+<div class="footer">Built with ❤️ — drop images in <code>images/</code> and achievement sound in <code>sounds/achievement.wav</code></div>
 
-  </div>
-
-  <div id="lightbox" onclick="this.style.display='none'"><img src="" alt=""></div>
-  <div class="footer">Built for fans — drop images into <code>images/</code> and sound into <code>sounds/achievement.wav</code></div>
+<!-- Achievement sound audio (local) -->
+<audio id="achAudio" src="sounds/achievement.wav" preload="auto"></audio>
 
 <script>
-/* --------------------------
-   Panel navigation
-   -------------------------- */
-const panels = {
-  home: document.getElementById('homePanel'),
-  slide: document.getElementById('slidePanel'),
-  ach: document.getElementById('achPanel'),
-  gallery: document.getElementById('galleryPanel'),
-  game: document.getElementById('gamePanel')
-};
-const navBtns = {
-  btnHome: document.getElementById('btnHome'),
-  btnSlideshow: document.getElementById('btnSlideshow'),
-  btnAchievements: document.getElementById('btnAchievements'),
-  btnGallery: document.getElementById('btnGallery'),
-  btnGame: document.getElementById('btnGame')
-};
-function showPanel(name){
-  Object.values(panels).forEach(p=>p.classList.remove('panel-active'));
-  panels[name].classList.add('panel-active');
-  // set active nav button style
-  Object.values(navBtns).forEach(b=>b.classList.remove('active'));
-  if(name==='home') navBtns.btnHome.classList.add('active');
-  if(name==='slide') navBtns.btnSlideshow.classList.add('active');
-  if(name==='ach') navBtns.btnAchievements.classList.add('active');
-  if(name==='gallery') navBtns.btnGallery.classList.add('active');
-  if(name==='game') navBtns.btnGame.classList.add('active');
-}
-navBtns.btnHome.addEventListener('click', ()=> showPanel('home'));
-navBtns.btnSlideshow.addEventListener('click', ()=> showPanel('slide'));
-navBtns.btnAchievements.addEventListener('click', ()=> showPanel('ach'));
-navBtns.btnGallery.addEventListener('click', ()=> showPanel('gallery'));
-navBtns.btnGame.addEventListener('click', ()=> showPanel('game'));
-
-/* --------------------------
-   Seasons & images mapping
-   (PPG/RPG/APG verified list used)
-   -------------------------- */
+/* ==========================
+   COLD-START: Variables & data
+   ========================== */
 const seasons = [
   {y:2003,team:'CLE',ppg:20.9,rpg:5.5,apg:5.9},
   {y:2004,team:'CLE',ppg:27.2,rpg:7.4,apg:7.2},
@@ -260,6 +245,7 @@ const seasons = [
   {y:2023,team:'LAL',ppg:28.9,rpg:8.1,apg:6.5},
   {y:2024,team:'LAL',ppg:27.6,rpg:8.1,apg:7.0}
 ];
+
 const eraImageMap = [
   {from:2003,to:2010,src:'images/lebron_2003.png'},
   {from:2010,to:2014,src:'images/lebron_2010.png'},
@@ -267,72 +253,153 @@ const eraImageMap = [
   {from:2018,to:2025,src:'images/lebron_2018.png'}
 ];
 
-/* --------------------------
-   Build slideshow DOM
-   -------------------------- */
+/* ==========================
+   Panel navigation (fixed)
+   ========================== */
+const panels = {
+  home: document.getElementById('panelHome'),
+  career: document.getElementById('panelCareer'),
+  ach: document.getElementById('panelAchievements'),
+  gallery: document.getElementById('panelGallery'),
+  game: document.getElementById('panelGame')
+};
+function showPanel(name){
+  Object.values(panels).forEach(p=>{ p.classList.remove('panel-active'); });
+  panels[name].classList.add('panel-active');
+  // update nav buttons active state
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  if(name==='home') document.getElementById('navHome').classList.add('active');
+  if(name==='career') document.getElementById('navCareer').classList.add('active');
+  if(name==='ach') document.getElementById('navAchievements').classList.add('active');
+  if(name==='gallery') document.getElementById('navGallery').classList.add('active');
+  if(name==='game') document.getElementById('navGame').classList.add('active');
+  // change particle colors depending on section
+  switch(name){
+    case 'career': setParticlePalette('#3b0f5a', '#f2c94c'); break;
+    case 'ach': setParticlePalette('#6b1a1a', '#f2c94c'); break;
+    case 'gallery': setParticlePalette('#1a3a5a', '#f2c94c'); break;
+    case 'game': setParticlePalette('#2a2a1a', '#f2c94c'); break;
+    default: setParticlePalette('#3b0f5a', '#f2c94c'); break;
+  }
+}
+document.getElementById('navHome').addEventListener('click', ()=> showPanel('home'));
+document.getElementById('navCareer').addEventListener('click', ()=> showPanel('career'));
+document.getElementById('navAchievements').addEventListener('click', ()=> showPanel('ach'));
+document.getElementById('navGallery').addEventListener('click', ()=> showPanel('gallery'));
+document.getElementById('navGame').addEventListener('click', ()=> showPanel('game'));
+
+/* ==========================
+   Particles (simple canvas)
+   ========================== */
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W = canvas.width = window.innerWidth;
+let H = canvas.height = window.innerHeight;
+let particles = [];
+let palA = '#3b0f5a', palB = '#f2c94c';
+function setParticlePalette(a,b){ palA=a; palB=b; }
+function initParticles(n=80){
+  particles = [];
+  for(let i=0;i<n;i++){
+    particles.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      vx: (Math.random()*2-1)*0.25,
+      vy: (Math.random()*2-1)*0.25,
+      r: Math.random()*2+1,
+      life: Math.random()*1
+    });
+  }
+}
+function drawParticles(){
+  ctx.clearRect(0,0,W,H);
+  for(const p of particles){
+    p.x += p.vx; p.y += p.vy;
+    if(p.x < 0) p.x = W;
+    if(p.x > W) p.x = 0;
+    if(p.y < 0) p.y = H;
+    if(p.y > H) p.y = 0;
+    const g = ctx.createRadialGradient(p.x,p.y,p.r,p.x,p.y,p.r*10);
+    g.addColorStop(0, palB);
+    g.addColorStop(1, palA + '22');
+    ctx.beginPath(); ctx.fillStyle = g; ctx.arc(p.x,p.y,p.r*2,0,Math.PI*2); ctx.fill();
+  }
+  requestAnimationFrame(drawParticles);
+}
+window.addEventListener('resize', ()=>{ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; initParticles(); });
+
+initParticles(); drawParticles();
+
+/* ==========================
+   Slideshow build + slot numbers
+   ========================== */
 const slideshow = document.getElementById('slideshow');
 const dots = document.getElementById('dots');
 let slides = [];
-seasons.forEach((s,idx)=>{
-  const era = eraImageMap.find(e=> s.y >= e.from && s.y < e.to) || eraImageMap[eraImageMap.length-1];
-  const el = document.createElement('div'); el.className = 'slide';
-  el.innerHTML = `
+
+// create slides
+seasons.forEach((s, idx) => {
+  const era = eraImageMap.find(e => s.y >= e.from && s.y < e.to) || eraImageMap[eraImageMap.length-1];
+  const sl = document.createElement('div'); sl.className = 'slide';
+  sl.innerHTML = `
     <div class="left"><img class="hero-image" src="${era.src}" alt="LeBron ${s.y}" onerror="this.style.opacity=.12"></div>
     <div class="right">
       <div class="title">Season ${s.y} • ${s.team}</div>
-      <div class="subtitle">Verified season averages (PPG / RPG / APG)</div>
+      <div class="subtitle">Verified season averages (PPG • RPG • APG)</div>
       <div class="scoreboard-row">
         <div class="card"><div class="label">PPG</div><div class="value"><div class="slot" data-type="ppg"></div></div></div>
         <div class="card"><div class="label">RPG</div><div class="value"><div class="slot" data-type="rpg"></div></div></div>
         <div class="card"><div class="label">APG</div><div class="value"><div class="slot" data-type="apg"></div></div></div>
       </div>
-      <div style="color:var(--muted); margin-top:8px">Click to roll numbers; swipe or use arrows/dots to navigate.</div>
+      <div style="color:var(--muted); margin-top:10px">Click slide to animate stats. Swipe or use arrows to navigate.</div>
     </div>
   `;
-  el.dataset.y = s.y; el.dataset.ppg = s.ppg; el.dataset.rpg = s.rpg; el.dataset.apg = s.apg;
-  slideshow.appendChild(el);
-  slides.push(el);
-  // dots
-  const d = document.createElement('div'); d.className='dot'; d.dataset.i = idx; d.addEventListener('click', ()=> goTo(idx, true)); dots.appendChild(d);
+  sl.dataset.y = s.y; sl.dataset.ppg = s.ppg; sl.dataset.rpg = s.rpg; sl.dataset.apg = s.apg;
+  slideshow.appendChild(sl);
+  slides.push(sl);
+
+  // dot
+  const d = document.createElement('div'); d.className='dot'; d.dataset.i = idx;
+  d.addEventListener('click', ()=> goTo(idx, true));
+  dots.appendChild(d);
 });
-// set initial slide
+
+// slideshow state
 let current = 0;
-function setActiveSlide(i){
+function setActive(i){
   slides.forEach((s,idx)=> s.classList.toggle('active', idx===i));
   Array.from(dots.children).forEach((d,idx)=> d.classList.toggle('active', idx===i));
-  prepareSlots(slides[i]); // lazy create slot numbers
-  setTimeout(()=> animateSlideSlots(slides[i]), 300);
+  prepareSlots(slides[i]);
+  setTimeout(()=> animateSlideSlots(slides[i]), 320);
 }
-setActiveSlide(0);
+setActive(0);
 
-/* --------------------------
-   Slot number helpers
-   -------------------------- */
-function createSlot(slot, target){
-  if(slot._prepared) return;
-  slot._prepared = true;
-  const strip = document.createElement('div'); strip.className='strip';
-  const step = 0.1;
-  for(let v=0.0; v <= target + 3; v = +(v + step).toFixed(1)){
-    const n = document.createElement('div'); n.textContent = v.toFixed(1); strip.appendChild(n);
-  }
-  slot.appendChild(strip); slot._strip = strip;
-}
+/* slots */
 function prepareSlots(slide){
-  const p = parseFloat(slide.dataset.ppg), r = parseFloat(slide.dataset.rpg), a = parseFloat(slide.dataset.apg);
-  slide.querySelectorAll('.slot').forEach(s=> createSlot(s, s.dataset.type==='ppg'?p:(s.dataset.type==='rpg'?r:a)) );
+  slide.querySelectorAll('.slot').forEach(slot => {
+    if(slot._prepared) return;
+    slot._prepared = true;
+    const target = parseFloat(slot.parentElement.parentElement.parentElement.parentElement.dataset[slot.dataset.type]); // fallback path
+    // safer: read from slide dataset
+    const t = slot.dataset.type === 'ppg' ? parseFloat(slide.dataset.ppg) : (slot.dataset.type === 'rpg' ? parseFloat(slide.dataset.rpg) : parseFloat(slide.dataset.apg));
+    const strip = document.createElement('div'); strip.className = 'strip';
+    for(let v=0.0; v<= t + 3; v = +(v + 0.1).toFixed(1)){
+      const n = document.createElement('div'); n.textContent = v.toFixed(1); strip.appendChild(n);
+    }
+    slot.appendChild(strip); slot._strip = strip;
+  });
 }
 function animateStrip(strip, target){
   const nodes = Array.from(strip.children);
-  if(nodes.length===0) return;
+  if(nodes.length === 0) return;
   const h = nodes[0].getBoundingClientRect().height;
   let idx = 0;
-  for(let i=0;i<nodes.length;i++){ if(parseFloat(nodes[i].textContent) >= target - 1e-6){ idx = i; break; } }
+  for(let i=0;i<nodes.length;i++){ if(parseFloat(nodes[i].textContent) >= target - 0.0001){ idx = i; break; } }
   const y = -(idx * h);
   strip.style.transition = 'transform 900ms cubic-bezier(.2,.9,.22,1)';
   strip.style.transform = `translateY(${y}px)`;
   setTimeout(()=>{ strip.style.transition = 'transform 420ms cubic-bezier(.2,.6,.22,1)'; strip.style.transform = `translateY(${y + 8}px)`; }, 920);
-  setTimeout(()=>{ strip.style.transition = 'transform 300ms cubic-bezier(.2,.9,.22,1)'; strip.style.transform = `translateY(${y}px)`; }, 1400);
+  setTimeout(()=>{ strip.style.transition = 'transform 320ms cubic-bezier(.2,.9,.22,1)'; strip.style.transform = `translateY(${y}px)`; }, 1400);
 }
 function animateSlideSlots(slide){
   const p = parseFloat(slide.dataset.ppg), r = parseFloat(slide.dataset.rpg), a = parseFloat(slide.dataset.apg);
@@ -344,212 +411,238 @@ function animateSlideSlots(slide){
   if(sa && sa._strip) animateStrip(sa._strip, a);
 }
 
-/* --------------------------
-   Autoplay, controls, swipe
-   -------------------------- */
+// click to animate
+slides.forEach((sl)=> sl.addEventListener('click', ()=> { prepareSlots(sl); animateSlideSlots(sl); sl.animate([{transform:'scale(1)'},{transform:'scale(1.03) rotate(-1deg)'},{transform:'scale(1)'}], {duration:520}); }));
+
+/* autoplay & controls */
 let autoplay = true, playing = true, autoplayDelay = 4200, autoplayTimer = null;
-function startAutoplay(){ if(!autoplay) return; stopAutoplay(); autoplayTimer = setInterval(()=> { nextSlide(false); }, autoplayDelay); }
+function startAutoplay(){ if(!autoplay) return; stopAutoplay(); autoplayTimer = setInterval(()=> { next(false); }, autoplayDelay); }
 function stopAutoplay(){ if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer = null; } }
 startAutoplay();
 
-document.getElementById('playPause').addEventListener('click', ()=>{
-  playing = !playing; document.getElementById('playPause').textContent = playing ? 'Pause':'Play';
+document.getElementById('playPause').addEventListener('click', ()=> {
+  playing = !playing; document.getElementById('playPause').textContent = playing ? 'Pause' : 'Play';
   if(playing) startAutoplay(); else stopAutoplay();
 });
-document.getElementById('autoplayToggle').addEventListener('click', ()=>{
-  autoplay = !autoplay; document.getElementById('autoplayToggle').textContent = autoplay ? 'Autoplay':'Manual';
+document.getElementById('autoplayBtn').addEventListener('click', ()=> {
+  autoplay = !autoplay; document.getElementById('autoplayBtn').textContent = autoplay ? 'Autoplay' : 'Manual';
   if(autoplay && playing) startAutoplay(); else stopAutoplay();
 });
-document.getElementById('prev').addEventListener('click', ()=> prevSlide(true));
-document.getElementById('next').addEventListener('click', ()=> nextSlide(true));
+document.getElementById('prev').addEventListener('click', ()=> prev(true));
+document.getElementById('next').addEventListener('click', ()=> next(true));
+function prev(user){ current = (current - 1 + slides.length) % slides.length; setActive(current); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
+function next(user){ current = (current + 1) % slides.length; setActive(current); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
+function goTo(i,user){ current = i % slides.length; setActive(current); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
 
-function prevSlide(user){
-  current = (current - 1 + slides.length) % slides.length; setActiveSlide(current);
-  if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; }
-}
-function nextSlide(user){
-  current = (current + 1) % slides.length; setActiveSlide(current);
-  if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; }
-}
-function goTo(i, user){ current = i % slides.length; setActiveSlide(current); if(user){ stopAutoplay(); playing=false; document.getElementById('playPause').textContent='Play'; } }
-
-// swipe: pointerdown/pointerup simple
-let sx=0, sy=0;
+// swipe support
+let sx = 0;
 const slideArea = document.getElementById('slideshow');
 slideArea.addEventListener('pointerdown', e=> { sx = e.clientX; });
-slideArea.addEventListener('pointerup', e=> {
-  const dx = e.clientX - sx;
-  if(Math.abs(dx) > 40){ if(dx < 0) nextSlide(true); else prevSlide(true); }
-});
+slideArea.addEventListener('pointerup', e=> { const dx = e.clientX - sx; if(Math.abs(dx) > 40){ if(dx < 0) next(true); else prev(true); } });
 
 // pause on hover
 slideArea.addEventListener('mouseenter', ()=> { if(playing) stopAutoplay(); });
 slideArea.addEventListener('mouseleave', ()=> { if(playing && autoplay) startAutoplay(); });
 
 /* keyboard nav */
-document.addEventListener('keydown', (e)=> {
-  if(e.key === 'ArrowRight') nextSlide(true);
-  if(e.key === 'ArrowLeft') prevSlide(true);
-});
+document.addEventListener('keydown', (e)=> { if(e.key === 'ArrowRight') next(true); if(e.key === 'ArrowLeft') prev(true); });
 
-/* --------------------------
-   Achievements: click => sound + confetti
-   -------------------------- */
-const achSound = new Audio('sounds/achievement.wav'); // drop in your mp3 if you prefer
+/* ensure initial slots prepared */
+prepareSlots(slides[0]);
+
+/* periodically auto-advance and animate */
+setInterval(()=> {
+  if(autoplay && playing){
+    next(false);
+    setTimeout(()=> { prepareSlots(slides[current]); animateSlideSlots(slides[current]); }, 280);
+  }
+}, autoplayDelay);
+
+/* ==========================
+   Achievements interactions
+   ========================== */
+const achAudio = document.getElementById('achAudio');
 document.querySelectorAll('.ach-card').forEach(card=>{
   card.addEventListener('click', async ()=>{
-    try{ achSound.currentTime = 0; await achSound.play(); } catch(e){}
-    // pulse
+    try{ achAudio.currentTime = 0; await achAudio.play(); } catch(e){}
     card.animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}], {duration:520});
     confettiBurst(card);
   });
 });
-function confettiBurst(parent){
-  const r = parent.getBoundingClientRect();
+function confettiBurst(el){
+  const r = el.getBoundingClientRect();
   for(let i=0;i<36;i++){
-    const el = document.createElement('div'); el.style.position='absolute'; el.style.pointerEvents='none';
-    el.style.left = (Math.random()*r.width) + 'px'; el.style.top = (Math.random()*r.height) + 'px';
-    el.style.width='10px'; el.style.height='8px'; el.style.borderRadius='2px'; el.style.background = Math.random()>0.5? '#f2c94c':'#d94800';
-    parent.appendChild(el);
-    const vx = (Math.random()*2-1)*120, vy = -(Math.random()*260 + 60);
-    el.animate([{transform:'translate(0,0) rotate(0deg)', opacity:1},{transform:`translate(${vx}px,${vy}px) rotate(${Math.random()*720}deg)`, opacity:0}], {duration:900+Math.random()*600, easing:'cubic-bezier(.2,.7,.2,1)'});
-    setTimeout(()=> el.remove(), 1400);
+    const c = document.createElement('div'); c.style.position='absolute'; c.style.pointerEvents='none';
+    c.style.left = (Math.random()*r.width) + 'px'; c.style.top = (Math.random()*r.height) + 'px';
+    c.style.width='10px'; c.style.height='8px'; c.style.borderRadius='2px'; c.style.background = Math.random()>0.5 ? '#f2c94c' : '#d94800';
+    el.appendChild(c);
+    const vx = (Math.random()*2-1)*120; const vy = -(Math.random()*260 + 60);
+    c.animate([{transform:'translate(0,0) rotate(0deg)', opacity:1},{transform:`translate(${vx}px,${vy}px) rotate(${Math.random()*720}deg)`, opacity:0}], {duration:900+Math.random()*800, easing:'cubic-bezier(.2,.7,.2,1)'});
+    setTimeout(()=> c.remove(), 1500);
   }
 }
 
-/* --------------------------
+/* ==========================
    Gallery lightbox
-   -------------------------- */
+   ========================== */
 document.getElementById('galleryGrid').addEventListener('click', e=>{
   const img = e.target.closest('img');
   if(!img) return;
   const lb = document.getElementById('lightbox'); lb.style.display='flex'; lb.querySelector('img').src = img.dataset.full || img.src;
 });
 
-/* --------------------------
-   Mini-game: drag/flick + confetti + sound
-   -------------------------- */
-const ball = document.getElementById('ball');
+/* ==========================
+   Mini-game physics + confetti + sound
+   ========================== */
+const ball = document.getElementById('gameBall');
 const hoop = document.querySelector('.hoop');
 const hoopArea = document.getElementById('hoopArea');
-const scoreEl = document.getElementById('scoreVal');
-let score = 0;
-let dragging = false, ox=0, oy=0, sx2=0, sy2=0, vx=0, vy=0, last=0;
+const scoreVal = document.getElementById('scoreVal');
+let gameScore = 0;
+let dragging = false, offsetX=0, offsetY=0, lastX=0, lastY=0, vxG=0, vyG=0, lastT=0;
 
-function resetBall(){
+function placeBallCenter(){
   const r = hoopArea.getBoundingClientRect();
-  ball.style.transition = 'left 300ms ease, top 300ms ease';
-  ball.style.left = ((r.width - 56)/2) + 'px';
-  ball.style.top = (r.height - 92) + 'px';
-  setTimeout(()=> ball.style.transition = '', 350);
+  ball.style.left = ((r.width - 64)/2) + 'px';
+  ball.style.top = (r.height - 100) + 'px';
 }
-window.addEventListener('load', resetBall);
+window.addEventListener('load', placeBallCenter);
 
 ball.addEventListener('pointerdown', e=>{
-  e.preventDefault(); dragging = true; ball.setPointerCapture(e.pointerId);
+  dragging = true; ball.setPointerCapture(e.pointerId);
   const rect = ball.getBoundingClientRect();
-  ox = e.clientX - rect.left; oy = e.clientY - rect.top;
-  sx2 = e.clientX; sy2 = e.clientY; last = performance.now();
-  vx = vy = 0;
+  offsetX = e.clientX - rect.left; offsetY = e.clientY - rect.top;
+  lastX = e.clientX; lastY = e.clientY; lastT = performance.now(); vxG=vyG=0;
 });
 document.addEventListener('pointermove', e=>{
   if(!dragging) return;
-  const area = hoopArea.getBoundingClientRect();
-  let x = e.clientX - area.left - ox; let y = e.clientY - area.top - oy;
-  x = Math.max(0, Math.min(area.width - 56, x)); y = Math.max(0, Math.min(area.height - 56, y));
-  const now = performance.now(); const dt = Math.max(1, now - last);
-  vx = (e.clientX - sx2)/dt*16; vy = (e.clientY - sy2)/dt*16;
-  sx2 = e.clientX; sy2 = e.clientY; last = now;
+  const R = hoopArea.getBoundingClientRect();
+  let x = e.clientX - R.left - offsetX, y = e.clientY - R.top - offsetY;
+  x = Math.max(0, Math.min(R.width - 64, x)); y = Math.max(0, Math.min(R.height - 64, y));
+  const now = performance.now(); const dt = Math.max(1, now - lastT);
+  vxG = (e.clientX - lastX)/dt*16; vyG = (e.clientY - lastY)/dt*16;
+  lastX = e.clientX; lastY = e.clientY; lastT = now;
   ball.style.left = x + 'px'; ball.style.top = y + 'px';
 });
 document.addEventListener('pointerup', e=>{
-  if(!dragging) return; dragging = false;
-  simulateThrow(vx*6, vy*6);
+  if(!dragging) return; dragging=false;
+  simulateThrow(vxG*6, vyG*6);
 });
 
 function simulateThrow(ivx, ivy){
-  const areaRect = hoopArea.getBoundingClientRect();
+  const area = hoopArea.getBoundingClientRect();
   let x = parseFloat(ball.style.left || 0), y = parseFloat(ball.style.top || 0);
   let vxx = ivx, vyy = ivy;
-  const gravity = 0.8, friction=0.995, step=16;
+  const gravity = 0.8, friction = 0.995, step = 16;
   const sim = setInterval(()=>{
     vyy += gravity*(step/16);
     x += vxx*(step/16); y += vyy*(step/16);
-    if(x < 0){ x=0; vxx = -vxx*0.6; } if(x > areaRect.width - 56){ x = areaRect.width - 56; vxx = -vxx*0.6; }
-    if(y > areaRect.height - 56){ y = areaRect.height - 56; vyy = -vyy*0.6; }
+    if(x < 0){ x = 0; vxx = -vxx*0.6; } if(x > area.width - 64){ x = area.width - 64; vxx = -vxx*0.6; }
+    if(y > area.height - 64){ y = area.height - 64; vyy = -vyy*0.6; }
     ball.style.left = x + 'px'; ball.style.top = y + 'px';
-    // check hoop collision
+    // detect goal approx
     const bRect = ball.getBoundingClientRect(), hRect = hoop.getBoundingClientRect();
     const cx = bRect.left + bRect.width/2, cy = bRect.top + bRect.height/2;
-    if(cx > hRect.left && cx < hRect.right && cy > hRect.top && cy < hRect.bottom + 20){
-      clearInterval(sim); onScore(); return;
+    if(cx > hRect.left && cx < hRect.right && cy > hRect.top && cy < hRect.bottom + 18){
+      clearInterval(sim); scored(); return;
     }
-    if(Math.abs(vxx) < 0.3 && Math.abs(vyy) < 0.6 && y >= areaRect.height - 56 - 1){
-      clearInterval(sim); resetBall(); return;
+    if(Math.abs(vxx) < 0.3 && Math.abs(vyy) < 0.6 && y >= area.height - 64 - 1){
+      clearInterval(sim); placeBallCenter(); return;
     }
     vxx *= friction;
   }, step);
 }
 
-function onScore(){
-  score++; scoreEl.textContent = score;
-  // confetti
+function scored(){
+  gameScore++; scoreVal.textContent = gameScore;
+  // confetti across hoop
   const rect = hoopArea.getBoundingClientRect();
   for(let i=0;i<48;i++){
-    const el = document.createElement('div'); el.style.position='absolute'; el.style.left = (Math.random()*rect.width)+'px'; el.style.top = (Math.random()*80+10)+'px';
-    el.style.width='10px'; el.style.height='8px'; el.style.borderRadius='2px'; el.style.background = Math.random()>0.5? '#f2c94c':'#d94800'; hoopArea.appendChild(el);
+    const el = document.createElement('div'); el.style.position='absolute'; el.style.left = (Math.random()*rect.width)+'px'; el.style.top = (Math.random()*60+10)+'px';
+    el.style.width='10px'; el.style.height='8px'; el.style.borderRadius='2px'; el.style.background = Math.random()>0.5 ? '#f2c94c' : '#d94800';
+    hoopArea.appendChild(el);
     const vx2 = (Math.random()*2-1)*160, vy2 = -(Math.random()*260 + 80);
     el.animate([{transform:'translate(0,0) rotate(0deg)', opacity:1},{transform:`translate(${vx2}px,${vy2}px) rotate(${Math.random()*720}deg)`, opacity:0}], {duration:900+Math.random()*600, easing:'cubic-bezier(.2,.7,.2,1)'});
-    setTimeout(()=> el.remove(), 1700);
+    setTimeout(()=> el.remove(), 1600);
   }
-  try{ achSound.currentTime = 0; achSound.play(); } catch(e){}
-  setTimeout(()=> resetBall(), 700);
+  try{ achAudio.currentTime = 0; achAudio.play(); } catch(e){}
+  setTimeout(()=> placeBallCenter(), 700);
 }
 
-/* --------------------------
-   Audio unlock on gesture (browsers)
-   -------------------------- */
-let audioUnlocked = false;
-function unlockAudio(){ if(audioUnlocked) return; audioUnlocked = true; try{ achSound.play().then(()=>{ achSound.pause(); achSound.currentTime=0; }).catch(()=>{}); } catch(e){} }
-document.addEventListener('pointerdown', unlockAudio, {once:true});
+/* ==========================
+   Background music (procedural basketball beat via WebAudio)
+   ========================== */
+let audioCtx, masterGain, isMusicOn = true;
+const musicToggle = document.getElementById('musicToggle');
+function initAudio(){
+  if(audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain(); masterGain.gain.value = 0.24; masterGain.connect(audioCtx.destination);
+  // create a simple loop using scheduled oscillators + noise kick
+  const bpm = 85; // laid-back hip hop / basketball vibe
+  const beatInterval = 60 / bpm; // seconds
+  const createLoop = ()=> {
+    let t0 = audioCtx.currentTime + 0.1;
+    function scheduleBeat(){
+      // Kick (sine with quick envelope)
+      const k = audioCtx.createOscillator();
+      k.type = 'sine';
+      const kg = audioCtx.createGain(); kg.gain.value = 0;
+      k.connect(kg); kg.connect(masterGain);
+      k.frequency.value = 60;
+      kg.gain.setValueAtTime(0, t0);
+      kg.gain.linearRampToValueAtTime(1.2, t0 + 0.01);
+      kg.gain.exponentialRampToValueAtTime(0.001, t0 + 0.25);
+      k.start(t0); k.stop(t0 + 0.3);
 
-/* --------------------------
-   Build initial UI: populate slideshow + auto-roll some slides
-   -------------------------- */
-(function init(){
-  // Already built DOM slides above; we now need to add them to the slideshow element.
-  // But we've already appended slides in build earlier - re-select to be safe:
-  const builtSlides = Array.from(document.querySelectorAll('.slide'));
-  if(builtSlides.length === 0){
-    // However, the script already appended slides in the DOM earlier via JS during page load in other versions.
-    // If none exist, build them now (fallback).
-    // We'll build here in case slideshow is empty (should not be necessary).
-    seasons.forEach((s, idx) => {
-      // handled earlier; but nothing to do here
-    });
+      // Snare-ish noise (brief)
+      const bufferSize = audioCtx.sampleRate * 0.2;
+      const noiseBuf = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = noiseBuf.getChannelData(0);
+      for(let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * Math.exp(-i/bufferSize*4);
+      const noise = audioCtx.createBufferSource(); noise.buffer = noiseBuf;
+      const ng = audioCtx.createGain(); ng.gain.value = 0;
+      const hf = audioCtx.createBiquadFilter(); hf.type='highshelf'; hf.frequency.value = 3000;
+      noise.connect(hf); hf.connect(ng); ng.connect(masterGain);
+      ng.gain.setValueAtTime(0, t0 + beatInterval*0.5);
+      ng.gain.linearRampToValueAtTime(0.6, t0 + beatInterval*0.5 + 0.005);
+      ng.gain.exponentialRampToValueAtTime(0.001, t0 + beatInterval*0.5 + 0.18);
+      noise.start(t0 + beatInterval*0.5); noise.stop(t0 + beatInterval*0.5 + 0.2);
+
+      // Click / hi-hat (short oscillator)
+      const h = audioCtx.createOscillator(); h.type='square'; h.frequency.value = 2000;
+      const hg = audioCtx.createGain(); hg.gain.value = 0;
+      h.connect(hg); hg.connect(masterGain);
+      hg.gain.setValueAtTime(0, t0 + beatInterval*0.25); hg.gain.linearRampToValueAtTime(0.28, t0 + beatInterval*0.25 + 0.003);
+      hg.gain.exponentialRampToValueAtTime(0.001, t0 + beatInterval*0.25 + 0.09);
+      h.start(t0 + beatInterval*0.25); h.stop(t0 + beatInterval*0.25 + 0.12);
+
+      t0 += beatInterval;
+      // schedule next beat
+      setTimeout(scheduleBeat, beatInterval * 1000);
+    }
+    scheduleBeat();
+  };
+  createLoop();
+}
+musicToggle.addEventListener('click', ()=>{
+  if(!audioCtx) initAudio();
+  if(isMusicOn){
+    masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4); musicToggle.textContent = 'Unmute'; isMusicOn = false;
+  } else {
+    masterGain.gain.linearRampToValueAtTime(0.24, audioCtx.currentTime + 0.2); musicToggle.textContent = 'Mute'; isMusicOn = true;
   }
-})();
+});
 
-/* After building slides earlier in script, set first active and prepare */
-setActiveSlide(0);
+/* unlock audio on first gesture so play works without extra click */
+document.addEventListener('pointerdown', function unlock(){ initAudio(); document.removeEventListener('pointerdown', unlock); }, {once:true});
+
+/* ==========================
+   Init: show career panel by default with particles / slots prepared
+   ========================== */
+showPanel('career');
 prepareSlots(slides[0]);
-
-/* periodic autoplay triggers rolling when slide changes */
-setInterval(()=> {
-  if(autoplay && playing){
-    nextSlide(false);
-    setTimeout(()=> { prepareSlots(slides[current]); animateSlideSlots(slides[current]); }, 320);
-  }
-}, autoplayDelay);
-
-/* Expose achSound to other scopes */
-const achSound = new Audio('sounds/achievement.wav');
-
-/* ensure panels start: home active */
-showPanel('home');
-
-/* small helper: re-prepare slots if images take time to load */
-window.addEventListener('load', ()=> { prepareSlots(slides[current]); animateSlideSlots(slides[current]); });
+animateSlideSlots(slides[0]);
 
 </script>
 </body>
